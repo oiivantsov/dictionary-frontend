@@ -67,23 +67,43 @@ const AddWordForm = () => {
   // Автоматическая загрузка данных (выбор между англ. Wiki, фин. Wiki или обе)
   const fetchWordData = async (source) => {
     try {
-      const response = await axios.get(`http://127.0.0.1:5000/api/fetch-word?word=${word}`);
+      const response = await axios.get(`https://word-autofill.onrender.com/api/fetch-word?word=${word}`);
       const autoFilledData = response.data;
       
       setWordData((prevData) => ({
         ...prevData,
-
+      
         // Данные из англоязычной Wiki
-        translation: source.includes('eng') ? (prevData.translation || '') + '\n' + (autoFilledData.eng_data?.definitions || '') : prevData.translation,
-        category: source.includes('eng') ? (prevData.category || '') + '\n' + (autoFilledData.eng_data?.PoS || '') : prevData.category,
-        synonyms: source.includes('eng') ? (prevData.synonyms || '') + '\n' + (autoFilledData.eng_data?.synonyms || '') : prevData.synonyms,  // Проверка на null
-        example: source.includes('eng') ? (prevData.example || '') + '\n' + (autoFilledData.eng_data?.examples || '') : prevData.example,
-        wordFormation: source.includes('eng') ? (prevData.wordFormation || '') + '\n' + (autoFilledData.eng_data?.etymology || '') : prevData.wordFormation,  // Проверка на null
-  
+        translation: source.includes('eng') 
+          ? (prevData.translation ? prevData.translation + '\n' : '') + (autoFilledData.eng_data?.definitions || '') 
+          : prevData.translation,
+        
+        category: source.includes('eng') 
+          ? (prevData.category ? prevData.category + '\n' : '') + (autoFilledData.eng_data?.PoS || '') 
+          : prevData.category,
+        
+        synonyms: source.includes('eng') 
+          ? (prevData.synonyms ? prevData.synonyms + '\n' : '') + (autoFilledData.eng_data?.synonyms || '') 
+          : prevData.synonyms,
+        
+        example: source.includes('eng') 
+          ? (prevData.example ? prevData.example + '\n' : '') + (autoFilledData.eng_data?.examples || '') 
+          : prevData.example,
+        
+        wordFormation: source.includes('eng') 
+          ? (prevData.wordFormation ? prevData.wordFormation + '\n' : '') + (autoFilledData.eng_data?.etymology || '') 
+          : prevData.wordFormation,
+      
         // Данные из финской Wiki
-        comment: source.includes('fi') ? (prevData.comment || '') + '\n' + (autoFilledData.fi_data?.definitions || '') : prevData.comment,  // В "Комментарий" определение
-        example: source.includes('fi') ? (prevData.example || '') + '\n' + (autoFilledData.fi_data?.examples || '') : prevData.example  // В "Примеры" примеры
+        comment: source.includes('fi') 
+          ? (prevData.comment ? prevData.comment + '\n' : '') + (autoFilledData.fi_data?.definitions || '') 
+          : prevData.comment,
+        
+        example: source.includes('fi') 
+          ? (prevData.example ? prevData.example + '\n' : '') + (autoFilledData.fi_data?.examples || '') 
+          : prevData.example
       }));
+      
     } catch (error) {
       console.error('Ошибка при загрузке данных:', error);
     }

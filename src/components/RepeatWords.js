@@ -8,6 +8,7 @@ const RepeatWords = () => {
   const [selectedWord, setSelectedWord] = useState(null); // Выбранное слово для редактирования
   const [showWord, setShowWord] = useState(false); // Добавляем состояние для переключения между словом и переводом
   const [daysSinceLastRepeat, setDaysSinceLastRepeat] = useState(0); // Days since last repeat
+  const [customDate, setCustomDate] = useState(dayjs().format('YYYY-MM-DD'));
 
   useEffect(() => {
     const fetchWords = async () => {
@@ -16,19 +17,19 @@ const RepeatWords = () => {
         setWords(response.data);
 
         if (response.data.length > 0) {
-            const maxDays = response.data
-              .map((word) => {
-                if (word.dateRepeated) {
-                  return dayjs().diff(dayjs(word.dateRepeated), 'day');
-                }
-                return 0; // Default to 0 if dateRepeated is null
-              })
-              .reduce((max, current) => Math.max(max, current), 0);
-  
-            setDaysSinceLastRepeat(maxDays);
-          } else {
-            setDaysSinceLastRepeat(0);
-          }
+          const maxDays = response.data
+            .map((word) => {
+              if (word.dateRepeated) {
+                return dayjs().diff(dayjs(word.dateRepeated), 'day');
+              }
+              return 0; // Default to 0 if dateRepeated is null
+            })
+            .reduce((max, current) => Math.max(max, current), 0);
+
+          setDaysSinceLastRepeat(maxDays);
+        } else {
+          setDaysSinceLastRepeat(0);
+        }
 
       } catch (error) {
         console.error('Ошибка при загрузке слов:', error);
@@ -62,12 +63,17 @@ const RepeatWords = () => {
   // Функция для обновления уровня всех слов
   const handleNextLevel = async () => {
     try {
-      await axios.post('/api/words/upgrade', words);
+      const updatedWords = words.map(word => ({
+        ...word,
+        dateRepeated: customDate
+      }));
+      await axios.post(`/api/words/upgrade?date=${customDate}`, updatedWords);
       alert('Слова перенесены на следующий уровень!');
     } catch (error) {
       console.error('Ошибка при обновлении уровня:', error);
     }
   };
+
 
   // Функция для переключения между словом и переводом
   const toggleShowWord = () => {
@@ -103,11 +109,11 @@ const RepeatWords = () => {
             {Array.isArray(words) && words.length > 0 ? (
               words.map((word) => (
                 <li key={word.id} className="list-group-item d-flex justify-content-between align-items-center">
-                {/* В зависимости от состояния показываем слово или перевод */}
-                <p className="mb-0 flex-grow-1 word-text">{showWord ? word.word : word.translation}</p>
-                <button className="btn btn-secondary word-button" onClick={() => handleViewWord(word)}>
+                  {/* В зависимости от состояния показываем слово или перевод */}
+                  <p className="mb-0 flex-grow-1 word-text">{showWord ? word.word : word.translation}</p>
+                  <button className="btn btn-secondary word-button" onClick={() => handleViewWord(word)}>
                     Посмотреть слово
-                </button>
+                  </button>
                 </li>
               ))
             ) : (
@@ -115,15 +121,27 @@ const RepeatWords = () => {
             )}
           </ul>
 
-          <button className="btn btn-primary mt-3" onClick={handleNextLevel}>
-            Готово — Перенести на следующий уровень
-          </button>
+          <div className="d-flex align-items-center mt-3">
+            <button className="btn btn-primary" onClick={handleNextLevel}>
+              Level up!
+            </button>
+            <input
+              type="date"
+              id="customDate"
+              value={customDate}
+              onChange={(e) => setCustomDate(e.target.value)}
+              className="form-control mx-2"
+              style={{ width: '150px' }} // Shorten the width of the date input
+            />
+          </div>
+
+
         </>
       ) : (
         <div className="card position-relative">
-              <button className="btn btn-secondary back-top-right" onClick={handleBackToList}>
-                    Назад
-                </button>
+          <button className="btn btn-secondary back-top-right" onClick={handleBackToList}>
+            Назад
+          </button>
           <h2>Редактировать слово</h2>
           <div className="form-group">
             <label>Финское слово:</label>

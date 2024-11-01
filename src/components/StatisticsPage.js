@@ -21,53 +21,48 @@ const StatisticsPage = () => {
     return <div>Загрузка статистики...</div>;
   }
 
-  // Проверяем, что статистика содержит нужные данные
   const allDays = statistics.allDays || [];
   const distribution = statistics.distribution || {};
-
-  // Сортируем дни
   const sortedDays = Array.isArray(allDays) ? allDays.sort((a, b) => a - b) : [];
 
   return (
     <div className="container mt-5">
       <h2>Общая статистика</h2>
 
-      {/* 1. Количество слов */}
       <p>Всего слов в словаре: {statistics.totalWords}</p>
-
-      {/* 2. Количество изученных слов */}
       <p>Изучено слов: {statistics.studiedWords}</p>
 
-      {/* 3. Таблица распределения слов */}
       <h3>Распределение слов по уровням и дням с последнего повторения</h3>
-      <table className="table table-bordered">
-        <thead>
-          <tr>
-            <th>Количество дней</th>
-            {[...Array(12).keys()].map(level => (
-              <th key={level + 1}>Ур. {level + 1}</th>
-            ))}
-          </tr>
-        </thead>
-        <tbody>
-          {sortedDays.length > 0 ? (
-            sortedDays.map(days => (
-              <tr key={days}>
-                <td>{days}</td>
-                {[...Array(12).keys()].map(level => (
-                  <td key={level + 1}>
-                    {(distribution[level + 1] && distribution[level + 1][days]) || ''}
-                  </td>
-                ))}
-              </tr>
-            ))
-          ) : (
+      <div style={{ overflowX: 'auto' }}>
+        <table className="table table-bordered">
+          <thead>
             <tr>
-              <td colSpan="13">Нет данных для отображения</td>
+              <th>Количество дней</th>
+              {[...Array(12).keys()].map(level => (
+                <th key={level + 1}>Ур. {level + 1}</th>
+              ))}
             </tr>
-          )}
-        </tbody>
-      </table>
+          </thead>
+          <tbody>
+            {sortedDays.length > 0 ? (
+              sortedDays.map(days => (
+                <tr key={days}>
+                  <td>{days}</td>
+                  {[...Array(12).keys()].map(level => (
+                    <td key={level + 1}>
+                      {(distribution[level + 1] && distribution[level + 1][days]) || ''}
+                    </td>
+                  ))}
+                </tr>
+              ))
+            ) : (
+              <tr>
+                <td colSpan="13">Нет данных для отображения</td>
+              </tr>
+            )}
+          </tbody>
+        </table>
+      </div>
     </div>
   );
 };
