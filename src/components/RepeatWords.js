@@ -6,7 +6,6 @@ const RepeatWords = () => {
   const [level, setLevel] = useState(1);
   const [words, setWords] = useState([]);
   const [selectedWord, setSelectedWord] = useState(null); // Выбранное слово для редактирования
-  const [showWord, setShowWord] = useState(false); // Добавляем состояние для переключения между словом и переводом
   const [daysSinceLastRepeat, setDaysSinceLastRepeat] = useState(0); // Days since last repeat
   const [customDate, setCustomDate] = useState(dayjs().format('YYYY-MM-DD'));
   const [globalShowTranslation, setGlobalShowTranslation] = useState(false);
@@ -57,11 +56,6 @@ const RepeatWords = () => {
     })));
   };
 
-  // Функция для открытия полной карточки слова
-  const handleViewWord = (word) => {
-    setSelectedWord(word);
-  };
-
   // Функция для возвращения обратно к списку слов
   const handleBackToList = () => {
     setSelectedWord(null);
@@ -90,12 +84,6 @@ const RepeatWords = () => {
     } catch (error) {
       console.error('Ошибка при обновлении уровня:', error);
     }
-  };
-
-
-  // Функция для переключения между словом и переводом
-  const toggleShowWord = () => {
-    setShowWord(!showWord);
   };
 
   return (

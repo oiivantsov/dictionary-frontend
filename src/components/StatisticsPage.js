@@ -24,6 +24,8 @@ const StatisticsPage = () => {
   const allDays = statistics.allDays || [];
   const distribution = statistics.distribution || {};
   const sortedDays = Array.isArray(allDays) ? allDays.sort((a, b) => a - b) : [];
+  const uniqueValues = ['1,4', '8', '16', '33', '42', '51', '71', '100', '123', '123', '200', '300'];
+
 
   return (
     <div className="container mt-5">
@@ -39,7 +41,10 @@ const StatisticsPage = () => {
             <tr>
               <th>Количество дней</th>
               {[...Array(12).keys()].map(level => (
-                <th key={level + 1}>Ур. {level + 1}</th>
+                <th
+                  key={level + 1}>Ур. {level + 1} 
+                  <span style={{ fontWeight: 'normal' }}> | {uniqueValues[level]}</span>
+                </th>
               ))}
             </tr>
           </thead>
