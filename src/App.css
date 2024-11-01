@@ -166,5 +166,8 @@ select.level-selector {
   display: block; /* Убедимся, что элемент занимает всю ширину блока */
 }
 
+.mb-section {
+  margin-bottom: 20px;
+}
 
 

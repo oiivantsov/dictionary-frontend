@@ -9,21 +9,24 @@ const RepeatWords = () => {
   const [showWord, setShowWord] = useState(false); // Добавляем состояние для переключения между словом и переводом
   const [daysSinceLastRepeat, setDaysSinceLastRepeat] = useState(0); // Days since last repeat
   const [customDate, setCustomDate] = useState(dayjs().format('YYYY-MM-DD'));
+  const [globalShowTranslation, setGlobalShowTranslation] = useState(false);
 
   useEffect(() => {
     const fetchWords = async () => {
       try {
         const response = await axios.get(`/api/words/repeat?level=${level}`);
-        setWords(response.data);
 
-        if (response.data.length > 0) {
-          const maxDays = response.data
-            .map((word) => {
-              if (word.dateRepeated) {
-                return dayjs().diff(dayjs(word.dateRepeated), 'day');
-              }
-              return 0; // Default to 0 if dateRepeated is null
-            })
+        // Initialize each word with a `showTranslation` property
+        const wordsWithToggle = response.data.map((word) => ({
+          ...word,
+          showTranslation: globalShowTranslation
+        }));
+
+        setWords(wordsWithToggle);
+
+        if (wordsWithToggle.length > 0) {
+          const maxDays = wordsWithToggle
+            .map((word) => word.dateRepeated ? dayjs().diff(dayjs(word.dateRepeated), 'day') : 0)
             .reduce((max, current) => Math.max(max, current), 0);
 
           setDaysSinceLastRepeat(maxDays);
@@ -36,8 +39,23 @@ const RepeatWords = () => {
       }
     };
 
+
     fetchWords();
-  }, [level]);
+  }, [level, globalShowTranslation]);
+
+  const toggleWordVisibility = (id) => {
+    setWords(words.map((word) =>
+      word.id === id ? { ...word, showTranslation: !word.showTranslation } : word
+    ));
+  };
+
+  const toggleAllWordsVisibility = () => {
+    setGlobalShowTranslation(!globalShowTranslation);
+    setWords(words.map((word) => ({
+      ...word,
+      showTranslation: !globalShowTranslation
+    })));
+  };
 
   // Функция для открытия полной карточки слова
   const handleViewWord = (word) => {
@@ -100,9 +118,9 @@ const RepeatWords = () => {
             ))}
           </select>
 
-          {/* Кнопка переключения между словом и переводом */}
-          <button onClick={toggleShowWord} className="btn btn-info mb-3">
-            {showWord ? 'Показать переводы' : 'Показать слова'}
+          {/* Button to toggle all cards between words and translations */}
+          <button onClick={toggleAllWordsVisibility} className="btn btn-info mb-3">
+            {globalShowTranslation ? 'Показать слова' : 'Показать переводы'}
           </button>
 
           <ul className="list-group">
@@ -110,10 +128,25 @@ const RepeatWords = () => {
               words.map((word) => (
                 <li key={word.id} className="list-group-item d-flex justify-content-between align-items-center">
                   {/* В зависимости от состояния показываем слово или перевод */}
-                  <p className="mb-0 flex-grow-1 word-text">{showWord ? word.word : word.translation}</p>
-                  <button className="btn btn-secondary word-button" onClick={() => handleViewWord(word)}>
-                    Посмотреть слово
-                  </button>
+                  <p className="mb-0 flex-grow-1 word-text">
+                    {word.showTranslation ? word.translation : word.word}
+                  </p>
+                  <div className="d-flex flex-column align-items-start">
+                    <button
+                      className="btn btn-primary word-button mb-2"
+                      style={{ width: '100px' }} // Фиксированная ширина кнопки
+                      onClick={() => toggleWordVisibility(word.id)}
+                    >
+                      {word.showTranslation ? 'Слово' : 'Перевод'}
+                    </button>
+                    <button
+                      className="btn btn-success word-button"
+                      style={{ width: '100px' }} // Фиксированная ширина кнопки
+                      onClick={() => setSelectedWord(word)}
+                    >
+                      Детали
+                    </button>
+                  </div>
                 </li>
               ))
             ) : (
@@ -143,7 +176,7 @@ const RepeatWords = () => {
             Назад
           </button>
           <h2>Редактировать слово</h2>
-          <div className="form-group">
+          <div className="form-group mb-section">
             <label>Финское слово:</label>
             <input
               type="text"
@@ -152,15 +185,16 @@ const RepeatWords = () => {
               onChange={(e) => setSelectedWord({ ...selectedWord, word: e.target.value })}
             />
           </div>
-          <div className="form-group">
+          <div className="form-group mb-section">
             <label>Перевод:</label>
             <textarea
               className="form-control"
+              rows="4"
               value={selectedWord.translation}
               onChange={(e) => setSelectedWord({ ...selectedWord, translation: e.target.value })}
             />
           </div>
-          <div className="form-group">
+          <div className="form-group mb-section">
             <label>Категория:</label>
             <input
               type="text"
@@ -169,7 +203,7 @@ const RepeatWords = () => {
               onChange={(e) => setSelectedWord({ ...selectedWord, category: e.target.value })}
             />
           </div>
-          <div className="form-group">
+          <div className="form-group mb-section">
             <label>Категория 2:</label>
             <input
               type="text"
@@ -178,7 +212,7 @@ const RepeatWords = () => {
               onChange={(e) => setSelectedWord({ ...selectedWord, category2: e.target.value })}
             />
           </div>
-          <div className="form-group">
+          <div className="form-group mb-section">
             <label>Источник:</label>
             <input
               type="text"
@@ -187,7 +221,7 @@ const RepeatWords = () => {
               onChange={(e) => setSelectedWord({ ...selectedWord, source: e.target.value })}
             />
           </div>
-          <div className="form-group">
+          <div className="form-group mb-section">
             <label>Популярность:</label>
             <input
               type="number"
@@ -196,7 +230,7 @@ const RepeatWords = () => {
               onChange={(e) => setSelectedWord({ ...selectedWord, popularity: e.target.value })}
             />
           </div>
-          <div className="form-group">
+          <div className="form-group mb-section">
             <label>На повторение:</label>
             <input
               type="number"
@@ -205,23 +239,25 @@ const RepeatWords = () => {
               onChange={(e) => setSelectedWord({ ...selectedWord, repeatAgain: e.target.value })}
             />
           </div>
-          <div className="form-group">
+          <div className="form-group mb-section">
             <label>Комментарий:</label>
             <textarea
               className="form-control"
+              rows="4"
               value={selectedWord.comment}
               onChange={(e) => setSelectedWord({ ...selectedWord, comment: e.target.value })}
             />
           </div>
-          <div className="form-group">
+          <div className="form-group mb-section">
             <label>Примеры:</label>
             <textarea
               className="form-control"
+              rows="5" // Увеличиваем высоту текстового поля
               value={selectedWord.example}
               onChange={(e) => setSelectedWord({ ...selectedWord, example: e.target.value })}
             />
           </div>
-          <div className="form-group">
+          <div className="form-group mb-section">
             <label>Синонимы:</label>
             <textarea
               className="form-control"
@@ -229,7 +265,7 @@ const RepeatWords = () => {
               onChange={(e) => setSelectedWord({ ...selectedWord, synonyms: e.target.value })}
             />
           </div>
-          <div className="form-group">
+          <div className="form-group mb-section">
             <label>Словообразование:</label>
             <textarea
               className="form-control"
@@ -237,7 +273,7 @@ const RepeatWords = () => {
               onChange={(e) => setSelectedWord({ ...selectedWord, wordFormation: e.target.value })}
             />
           </div>
-          <div className="form-group">
+          <div className="form-group mb-section">
             <label>Частота:</label>
             <input
               type="number"
@@ -246,16 +282,16 @@ const RepeatWords = () => {
               onChange={(e) => setSelectedWord({ ...selectedWord, frequency: e.target.value })}
             />
           </div>
-          <div className="form-group">
+          <div className="form-group mb-section">
             <label>Дата добавления:</label>
             <input
               type="date"
-              className="form-control"
+              className="form-control mb-section"
               value={selectedWord.dateAdded ? dayjs(selectedWord.dateAdded).format('YYYY-MM-DD') : ''}
               onChange={(e) => setSelectedWord({ ...selectedWord, dateAdded: e.target.value })}
             />
           </div>
-          <div className="form-group">
+          <div className="form-group mb-section">
             <label>Дата последнего повторения:</label>
             <input
               type="date"
