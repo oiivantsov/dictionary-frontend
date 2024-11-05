@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import axios from "axios";
 import 'bootstrap/dist/css/bootstrap.min.css';  // Importing Bootstrap
 
-axios.defaults.baseURL = 'https://dictionary-x8gl.onrender.com';  // Replace with your actual backend URL if different
+axios.defaults.baseURL = 'http://127.0.0.1:8000';  // Replace with your actual backend URL if different
 
 const SearchWords = () => {
   const [searchTerm, setSearchTerm] = useState("");
@@ -21,6 +21,10 @@ const SearchWords = () => {
           [searchBy]: searchTerm,
         },
       });
+      console.log(response)
+      if (response.data.length === 0) {
+        alert("Не найдено");
+      }
       setResults(response.data);
       setSelectedWord(null); // Clear selected word if a new search is performed
     } catch (error) {
@@ -30,6 +34,7 @@ const SearchWords = () => {
   
 
   const handleWordClick = (word) => {
+    console.log(word)
     setSelectedWord(word);
   };
 
@@ -81,14 +86,14 @@ const SearchWords = () => {
           <p><strong>Источник:</strong> {selectedWord.source}</p>
           <p><strong>Синонимы:</strong> {selectedWord.synonyms}</p>
           <p><strong>Примеры:</strong> {selectedWord.example}</p>
-          <p><strong>Словообразование:</strong> {selectedWord.wordFormation}</p>
+          <p><strong>Словообразование:</strong> {selectedWord.word_formation}</p>
           <p><strong>Комментарий:</strong> {selectedWord.comment}</p>
           <p><strong>Уровень:</strong> {selectedWord.level}</p>
           <p><strong>Популярность:</strong> {selectedWord.popularity}</p>
-          <p><strong>На повторение:</strong> {selectedWord.repeatAgain}</p>
-          <p><strong>Дата добавления:</strong> {selectedWord.dateAdded}</p>
-          <p><strong>Последняя дата повторения:</strong> {selectedWord.dateRepeated}</p>
-          <p><strong>Дни с последнего повторения:</strong> {selectedWord.daysSinceLastRepeat}</p>
+          <p><strong>На повторение:</strong> {selectedWord.repeat_again}</p>
+          <p><strong>Дата добавления:</strong> {selectedWord.date_added}</p>
+          <p><strong>Последняя дата повторения:</strong> {selectedWord.date_repeated}</p>
+          <p><strong>Дни с последнего повторения:</strong> {selectedWord.days_since_last_repeat}</p>
           <p><strong>Топ 10,000:</strong> {selectedWord.frequency}</p>
           <button className="btn btn-secondary mt-3" onClick={handleBack}>
             Назад к результатам

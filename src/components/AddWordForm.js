@@ -4,20 +4,20 @@ import axios from 'axios';
 const AddWordForm = () => {
   const [word, setWord] = useState('');
   const [wordData, setWordData] = useState({
-    dateAdded: new Date().toISOString().split('T')[0],  // Автоматическая дата
-    dateRepeated: '',
+    date_added: new Date().toISOString().split('T')[0],  // Автоматическая дата
+    date_repeated: null,
     level: 0,  // Уровень по умолчанию 0
-    translation: '',
-    category: '',
-    category2: '',
-    source: '',
+    translation: null,
+    category: null,
+    category2: null,
+    source: null,
     popularity: 3,
-    repeatAgain: '',
-    comment: '',  // Поле для комментария
-    example: '',  // Поле для примеров
-    synonyms: '',  // Поле для синонимов
-    wordFormation: '',
-    frequency: ''
+    repeat_again: null,
+    comment: null,
+    example: null,
+    synonyms: null,
+    word_formation: null,
+    frequency: null
   });
   const [isEditMode, setIsEditMode] = useState(false);  // Режим редактирования
   const [successMessage, setSuccessMessage] = useState('');
@@ -25,20 +25,20 @@ const AddWordForm = () => {
   // Очистка всех полей
   const clearFields = () => {
     setWordData({
-      dateAdded: new Date().toISOString().split('T')[0],
-      dateRepeated: '',
+      date_added: new Date().toISOString().split('T')[0],
+      date_repeated: null,
       level: 0,
-      translation: '',
-      category: '',
-      category2: '',
-      source: '',
+      translation: null,
+      category: null,
+      category2: null,
+      source: null,
       popularity: 3,
-      repeatAgain: '',
-      comment: '',
-      example: '',
-      synonyms: '',
-      wordFormation: '',
-      frequency: ''
+      repeat_again: null,
+      comment: null,
+      example: null,
+      synonyms: null,
+      word_formation: null,
+      frequency: null
     });
   };
 
@@ -46,13 +46,14 @@ const AddWordForm = () => {
   const checkIfWordExists = async () => {
     clearFields();  // Очищаем все поля перед проверкой
     try {
-      const response = await axios.get(`/api/words/search`, {
+      const response = await axios.get(`/api/words/is`, {
         params: {
           word: word
         }
       });
 
       if (response.data.length > 0) {
+        alert('Слово найдено!');
         setWordData(response.data[0]);  // Если слово найдено, заполняем данные
         setIsEditMode(true);  // Включаем режим редактирования
       } else {
@@ -67,7 +68,7 @@ const AddWordForm = () => {
   // Автоматическая загрузка данных (выбор между англ. Wiki, фин. Wiki или обе)
   const fetchWordData = async (source) => {
     try {
-      const response = await axios.get(`https://word-autofill.onrender.com/api/fetch-word?word=${word}`);
+      const response = await axios.get(`/api/fetch-word?word=${word}`);
       const autoFilledData = response.data;
       
       setWordData((prevData) => ({
@@ -90,9 +91,9 @@ const AddWordForm = () => {
           ? (prevData.example ? prevData.example + '\n' : '') + (autoFilledData.eng_data?.examples || '') 
           : prevData.example,
         
-        wordFormation: source.includes('eng') 
-          ? (prevData.wordFormation ? prevData.wordFormation + '\n' : '') + (autoFilledData.eng_data?.etymology || '') 
-          : prevData.wordFormation,
+        word_formation: source.includes('eng') 
+          ? (prevData.word_formation ? prevData.word_formation + '\n' : '') + (autoFilledData.eng_data?.etymology || '') 
+          : prevData.word_formation,
       
         // Данные из финской Wiki
         comment: source.includes('fi') 
@@ -113,10 +114,14 @@ const AddWordForm = () => {
     const wordDataWithWord = { ...wordData, word }; // Добавляем слово в wordData
     try {
       if (isEditMode) {
+        console.log(wordData)
         await axios.put(`/api/words/${wordData.id}`, wordData);
+        alert('Слово успешно обновлено!');
         setSuccessMessage('Слово успешно обновлено!');
       } else {
+        console.log(wordDataWithWord)
         await axios.post('/api/words', wordDataWithWord);
+        alert('Слово успешно добавлено!');
         setSuccessMessage('Слово успешно добавлено!');
       }
       setWord('');
@@ -223,7 +228,10 @@ const AddWordForm = () => {
         <input
           type="number"
           value={wordData.popularity}
-          onChange={(e) => setWordData({ ...wordData, popularity: e.target.value })}
+          onChange={(e) => {
+            const newValue = e.target.value ? parseInt(e.target.value, 10) : null;
+            setWordData({ ...wordData, popularity: newValue })
+          }}
           className="form-control"
         />
       </div>
@@ -232,8 +240,11 @@ const AddWordForm = () => {
         <label>На повторение:</label> {/* Новое поле */}
         <input
           type="number"
-          value={wordData.repeatAgain}
-          onChange={(e) => setWordData({ ...wordData, repeatAgain: e.target.value })}
+          value={wordData.repeat_again}
+          onChange={(e) => {
+            const newValue = e.target.value ? parseInt(e.target.value, 10) : null;
+            setWordData({ ...wordData, repeat_again: newValue })
+          }}
           className="form-control"
         />
       </div>
@@ -242,8 +253,8 @@ const AddWordForm = () => {
         <label>Дата добавления:</label>
         <input
           type="date"
-          value={wordData.dateAdded}
-          onChange={(e) => setWordData({ ...wordData, dateAdded: e.target.value })}
+          value={wordData.date_added}
+          onChange={(e) => setWordData({ ...wordData, date_added: e.target.value })}
           className="form-control"
         />
       </div>
@@ -278,8 +289,8 @@ const AddWordForm = () => {
       <div className="form-group">
         <label>Словообразование:</label>
         <textarea
-          value={wordData.wordFormation}
-          onChange={(e) => setWordData({ ...wordData, wordFormation: e.target.value })}
+          value={wordData.word_formation}
+          onChange={(e) => setWordData({ ...wordData, word_formation: e.target.value })}
           className="form-control"
         />
       </div>

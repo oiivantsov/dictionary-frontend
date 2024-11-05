@@ -25,7 +25,7 @@ const RepeatWords = () => {
 
         if (wordsWithToggle.length > 0) {
           const maxDays = wordsWithToggle
-            .map((word) => word.dateRepeated ? dayjs().diff(dayjs(word.dateRepeated), 'day') : 0)
+            .map((word) => word.date_repeated ? dayjs().diff(dayjs(word.date_repeated), 'day') : 0)
             .reduce((max, current) => Math.max(max, current), 0);
 
           setDaysSinceLastRepeat(maxDays);
@@ -75,11 +75,13 @@ const RepeatWords = () => {
   // Функция для обновления уровня всех слов
   const handleNextLevel = async () => {
     try {
-      const updatedWords = words.map(word => ({
-        ...word,
-        dateRepeated: customDate
-      }));
-      await axios.post(`/api/words/upgrade?date=${customDate}`, updatedWords);
+      const updatedWords = {
+        level,
+        daysSinceLastRepeat,
+        date_repeated: customDate
+      };
+      console.log(updatedWords)
+      await axios.post(`/api/words/upgrade`, updatedWords);
       alert('Слова перенесены на следующий уровень!');
     } catch (error) {
       console.error('Ошибка при обновлении уровня:', error);
@@ -223,8 +225,8 @@ const RepeatWords = () => {
             <input
               type="number"
               className="form-control"
-              value={selectedWord.repeatAgain}
-              onChange={(e) => setSelectedWord({ ...selectedWord, repeatAgain: e.target.value })}
+              value={selectedWord.repeat_again}
+              onChange={(e) => setSelectedWord({ ...selectedWord, repeat_again: e.target.value })}
             />
           </div>
           <div className="form-group mb-section">
@@ -257,8 +259,8 @@ const RepeatWords = () => {
             <label>Словообразование:</label>
             <textarea
               className="form-control"
-              value={selectedWord.wordFormation}
-              onChange={(e) => setSelectedWord({ ...selectedWord, wordFormation: e.target.value })}
+              value={selectedWord.word_formation}
+              onChange={(e) => setSelectedWord({ ...selectedWord, word_formation: e.target.value })}
             />
           </div>
           <div className="form-group mb-section">
@@ -275,8 +277,8 @@ const RepeatWords = () => {
             <input
               type="date"
               className="form-control mb-section"
-              value={selectedWord.dateAdded ? dayjs(selectedWord.dateAdded).format('YYYY-MM-DD') : ''}
-              onChange={(e) => setSelectedWord({ ...selectedWord, dateAdded: e.target.value })}
+              value={selectedWord.date_added ? dayjs(selectedWord.date_added).format('YYYY-MM-DD') : ''}
+              onChange={(e) => setSelectedWord({ ...selectedWord, date_added: e.target.value })}
             />
           </div>
           <div className="form-group mb-section">
@@ -284,8 +286,8 @@ const RepeatWords = () => {
             <input
               type="date"
               className="form-control"
-              value={selectedWord.dateRepeated ? dayjs(selectedWord.dateRepeated).format('YYYY-MM-DD') : ''}
-              onChange={(e) => setSelectedWord({ ...selectedWord, dateRepeated: e.target.value })}
+              value={selectedWord.date_repeated ? dayjs(selectedWord.date_repeated).format('YYYY-MM-DD') : ''}
+              onChange={(e) => setSelectedWord({ ...selectedWord, date_repeated: e.target.value })}
             />
           </div>
           <button className="btn btn-success mt-3" onClick={handleSaveWord}>

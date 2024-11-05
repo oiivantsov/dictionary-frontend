@@ -24,8 +24,12 @@ const FilterWordsPage = () => {
 
   const fetchFilteredWords = async () => {
     try {
+      const filtersWithNulls = Object.fromEntries(
+        Object.entries(filters).map(([key, value]) => [key, value === '' ? null : value])
+      );
+
       const response = await axios.get('/api/words/filter', {
-        params: filters
+        params: filtersWithNulls
       });
       setWords(response.data);
     } catch (error) {
@@ -35,7 +39,7 @@ const FilterWordsPage = () => {
 
   const handleAddToStudy = async (word) => {
     try {
-      const updatedWord = { ...word, level: 1, dateRepeated: selectedRepeatDate };
+      const updatedWord = { ...word, level: 1, date_repeated: selectedRepeatDate };
       await axios.put(`/api/words/${word.id}`, updatedWord);
       alert('Слово добавлено на изучение!');
       fetchFilteredWords(); // Обновляем список после изменений
@@ -45,6 +49,7 @@ const FilterWordsPage = () => {
   };
 
   const handleEditWord = (word) => {
+    console.log(word)
     setSelectedWord(word);
   };
 
@@ -69,70 +74,101 @@ const FilterWordsPage = () => {
 
       {/* Форма фильтров */}
       <div className="filters mb-3">
-        <input
-          type="number"
-          name="daysSinceLastRepeat"
-          value={filters.daysSinceLastRepeat}
-          onChange={handleFilterChange}
-          placeholder="Количество дней с последнего повторения"
-          className="form-control mb-2"
-        />
-        <input
-          type="number"
-          name="level"
-          value={filters.level}
-          onChange={handleFilterChange}
-          placeholder="Уровень"
-          className="form-control mb-2"
-        />
-        <input
-          type="number"
-          name="popularity"
-          value={filters.popularity}
-          onChange={handleFilterChange}
-          placeholder="Популярность"
-          className="form-control mb-2"
-        />
-        <input
-          type="number"
-          name="frequency"
-          value={filters.frequency}
-          onChange={handleFilterChange}
-          placeholder="Частота"
-          className="form-control mb-2"
-        />
-        <input
-          type="text"
-          name="source"
-          value={filters.source}
-          onChange={handleFilterChange}
-          placeholder="Источник"
-          className="form-control mb-2"
-        />
-        <input
-          type="text"
-          name="category1"
-          value={filters.category1}
-          onChange={handleFilterChange}
-          placeholder="Категория 1"
-          className="form-control mb-2"
-        />
-        <input
-          type="text"
-          name="category2"
-          value={filters.category2}
-          onChange={handleFilterChange}
-          placeholder="Категория 2"
-          className="form-control mb-2"
-        />
-        <input
-          type="number"
-          name="repeatAgain"
-          value={filters.repeatAgain}
-          onChange={handleFilterChange}
-          placeholder="Вернуть на повторение"
-          className="form-control mb-2"
-        />
+        <div className="form-group">
+          <label htmlFor="daysSinceLastRepeat">Количество дней с последнего повторения:</label>
+          <input
+            type="number"
+            id="daysSinceLastRepeat"
+            name="daysSinceLastRepeat"
+            value={filters.daysSinceLastRepeat}
+            onChange={handleFilterChange}
+            className="form-control mb-2"
+          />
+        </div>
+
+        <div className="form-group">
+          <label htmlFor="level">Уровень:</label>
+          <input
+            type="number"
+            id="level"
+            name="level"
+            value={filters.level}
+            onChange={handleFilterChange}
+            className="form-control mb-2"
+          />
+        </div>
+
+        <div className="form-group">
+          <label htmlFor="popularity">Популярность:</label>
+          <input
+            type="number"
+            id="popularity"
+            name="popularity"
+            value={filters.popularity}
+            onChange={handleFilterChange}
+            className="form-control mb-2"
+          />
+        </div>
+
+        <div className="form-group">
+          <label htmlFor="frequency">Частота:</label>
+          <input
+            type="number"
+            id="frequency"
+            name="frequency"
+            value={filters.frequency}
+            onChange={handleFilterChange}
+            className="form-control mb-2"
+          />
+        </div>
+
+        <div className="form-group">
+          <label htmlFor="source">Источник:</label>
+          <input
+            type="text"
+            id="source"
+            name="source"
+            value={filters.source}
+            onChange={handleFilterChange}
+            className="form-control mb-2"
+          />
+        </div>
+
+        <div className="form-group">
+          <label htmlFor="category1">Категория 1:</label>
+          <input
+            type="text"
+            id="category1"
+            name="category1"
+            value={filters.category1}
+            onChange={handleFilterChange}
+            className="form-control mb-2"
+          />
+        </div>
+
+        <div className="form-group">
+          <label htmlFor="category2">Категория 2:</label>
+          <input
+            type="text"
+            id="category2"
+            name="category2"
+            value={filters.category2}
+            onChange={handleFilterChange}
+            className="form-control mb-2"
+          />
+        </div>
+
+        <div className="form-group">
+          <label htmlFor="repeatAgain">Вернуть на повторение:</label>
+          <input
+            type="number"
+            id="repeatAgain"
+            name="repeatAgain"
+            value={filters.repeatAgain}
+            onChange={handleFilterChange}
+            className="form-control mb-2"
+          />
+        </div>
 
         <button className="btn btn-primary mt-3" onClick={fetchFilteredWords}>
           Применить фильтры
@@ -232,8 +268,8 @@ const FilterWordsPage = () => {
             <input
               type="number"
               className="form-control"
-              value={selectedWord.repeatAgain}
-              onChange={(e) => setSelectedWord({ ...selectedWord, repeatAgain: e.target.value })}
+              value={selectedWord.repeat_again}
+              onChange={(e) => setSelectedWord({ ...selectedWord, repeat_again: e.target.value })}
             />
           </div>
           <div className="form-group">
@@ -264,8 +300,8 @@ const FilterWordsPage = () => {
             <label>Словообразование:</label>
             <textarea
               className="form-control"
-              value={selectedWord.wordFormation}
-              onChange={(e) => setSelectedWord({ ...selectedWord, wordFormation: e.target.value })}
+              value={selectedWord.word_formation}
+              onChange={(e) => setSelectedWord({ ...selectedWord, word_formation: e.target.value })}
             />
           </div>
           <div className="form-group">
@@ -282,8 +318,8 @@ const FilterWordsPage = () => {
             <input
               type="date"
               className="form-control"
-              value={selectedWord.dateAdded ? dayjs(selectedWord.dateAdded).format('YYYY-MM-DD') : ''}
-              onChange={(e) => setSelectedWord({ ...selectedWord, dateAdded: e.target.value })}
+              value={selectedWord.date_added}
+              onChange={(e) => setSelectedWord({ ...selectedWord, date_added: e.target.value })}
             />
           </div>
           <div className="form-group">
@@ -291,8 +327,8 @@ const FilterWordsPage = () => {
             <input
               type="date"
               className="form-control"
-              value={selectedWord.dateRepeated ? dayjs(selectedWord.dateRepeated).format('YYYY-MM-DD') : ''}
-              onChange={(e) => setSelectedWord({ ...selectedWord, dateRepeated: e.target.value })}
+              value={selectedWord.date_repeated}
+              onChange={(e) => setSelectedWord({ ...selectedWord, date_repeated: e.target.value })}
             />
           </div>
           <button className="btn btn-success mt-3" onClick={handleSaveWord}>
@@ -303,7 +339,7 @@ const FilterWordsPage = () => {
           </button>
         </div>
       )}
-      
+
       {/* Выбор даты повторения */}
       <div className="form-group mt-3">
         <label>Выберите дату повторения:</label>
