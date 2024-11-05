@@ -2,6 +2,8 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import dayjs from 'dayjs';
 
+axios.defaults.baseURL = 'https://dict-backend.onrender.com';
+
 const FilterWordsPage = () => {
   const [filters, setFilters] = useState({
     daysSinceLastRepeat: '',

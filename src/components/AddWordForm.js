@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 
+axios.defaults.baseURL = 'https://dict-backend.onrender.com';
+
 const AddWordForm = () => {
   const [word, setWord] = useState('');
   const [wordData, setWordData] = useState({

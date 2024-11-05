@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 
+axios.defaults.baseURL = 'https://dict-backend.onrender.com';
+
 const StatisticsPage = () => {
   const [statistics, setStatistics] = useState(null);
 
