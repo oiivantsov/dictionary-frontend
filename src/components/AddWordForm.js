@@ -55,12 +55,12 @@ const AddWordForm = () => {
       });
 
       if (response.data.length > 0) {
-        alert('Слово найдено!');
+        setSuccessMessage('Слово найдено!');
         setWordData(response.data[0]);  // Если слово найдено, заполняем данные
         setIsEditMode(true);  // Включаем режим редактирования
       } else {
         setIsEditMode(false);  // Если слово не найдено, это режим добавления
-        alert('Слова нет в словаре.');
+        setSuccessMessage('Слова нет в словаре!');
       }
     } catch (error) {
       console.error('Ошибка при проверке слова:', error);
@@ -118,12 +118,10 @@ const AddWordForm = () => {
       if (isEditMode) {
         console.log(wordData)
         await axios.put(`/api/words/${wordData.id}`, wordData);
-        alert('Слово успешно обновлено!');
         setSuccessMessage('Слово успешно обновлено!');
       } else {
         console.log(wordDataWithWord)
         await axios.post('/api/words', wordDataWithWord);
-        alert('Слово успешно добавлено!');
         setSuccessMessage('Слово успешно добавлено!');
       }
       setWord('');
@@ -156,8 +154,11 @@ const AddWordForm = () => {
             >
             Проверить наличие в словаре
             </button>
+            
         </div>
       </div>
+
+      {successMessage && <p className="text-success mt-3">{successMessage}</p>}
 
       <div className="d-flex justify-content-around mb-3 mt-3">
         <button 
@@ -302,7 +303,7 @@ const AddWordForm = () => {
             {isEditMode ? 'Изменить слово' : 'Добавить слово'}
         </button>
       </div>
-      {successMessage && <p className="text-success mt-3">{successMessage}</p>}
+      
     </div>
   );
 };

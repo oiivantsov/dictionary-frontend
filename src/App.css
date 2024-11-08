@@ -159,6 +159,12 @@ select {
   padding: 20px;
 }
 
+.text-success {
+  width: 100%;
+  margin: auto;
+  text-align: center;
+}
+
 select.level-selector {
   width: 100%; /* Установим ширину по умолчанию */
   max-width: 300px; /* Или любое другое значение для ширины */
