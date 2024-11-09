@@ -2,15 +2,13 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import dayjs from 'dayjs';
 
-axios.defaults.baseURL = 'https://dict-backend.onrender.com';
-
 const RepeatWords = () => {
   const [level, setLevel] = useState(1);
   const [words, setWords] = useState([]);
   const [selectedWord, setSelectedWord] = useState(null); // Выбранное слово для редактирования
   const [daysSinceLastRepeat, setDaysSinceLastRepeat] = useState(0); // Days since last repeat
   const [customDate, setCustomDate] = useState(dayjs().format('YYYY-MM-DD'));
-  const [globalShowTranslation, setGlobalShowTranslation] = useState(false);
+  const [globalShowTranslation, setGlobalShowTranslation] = useState(true);
 
   useEffect(() => {
     const fetchWords = async () => {

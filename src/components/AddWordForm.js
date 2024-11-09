@@ -1,8 +1,6 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 
-axios.defaults.baseURL = 'https://dict-backend.onrender.com';
-
 const AddWordForm = () => {
   const [word, setWord] = useState('');
   const [wordData, setWordData] = useState({
@@ -22,7 +20,7 @@ const AddWordForm = () => {
     frequency: null
   });
   const [isEditMode, setIsEditMode] = useState(false);  // Режим редактирования
-  const [successMessage, setSuccessMessage] = useState('');
+  const [successMessage, setSuccessMessage] = useState('-');
 
   // Очистка всех полей
   const clearFields = () => {
@@ -67,46 +65,36 @@ const AddWordForm = () => {
     }
   };
 
-  // Автоматическая загрузка данных (выбор между англ. Wiki, фин. Wiki или обе)
+  // Автоматическая загрузка данных (поиск по англ. или фин. Wiki)
   const fetchWordData = async (source) => {
     try {
-      const response = await axios.get(`/api/fetch-word?word=${word}`);
+      const response = await axios.get(`/api/fetch-word-${source}`, {
+        params: { word }
+      });
       const autoFilledData = response.data;
-      
+
       setWordData((prevData) => ({
         ...prevData,
-      
-        // Данные из англоязычной Wiki
-        translation: source.includes('eng') 
-          ? (prevData.translation ? prevData.translation + '\n' : '') + (autoFilledData.eng_data?.definitions || '') 
-          : prevData.translation,
-        
-        category: source.includes('eng') 
-          ? (prevData.category ? prevData.category + '\n' : '') + (autoFilledData.eng_data?.PoS || '') 
-          : prevData.category,
-        
-        synonyms: source.includes('eng') 
-          ? (prevData.synonyms ? prevData.synonyms + '\n' : '') + (autoFilledData.eng_data?.synonyms || '') 
-          : prevData.synonyms,
-        
-        example: source.includes('eng') 
-          ? (prevData.example ? prevData.example + '\n' : '') + (autoFilledData.eng_data?.examples || '') 
-          : prevData.example,
-        
-        word_formation: source.includes('eng') 
-          ? (prevData.word_formation ? prevData.word_formation + '\n' : '') + (autoFilledData.eng_data?.etymology || '') 
-          : prevData.word_formation,
-      
-        // Данные из финской Wiki
-        comment: source.includes('fi') 
-          ? (prevData.comment ? prevData.comment + '\n' : '') + (autoFilledData.fi_data?.definitions || '') 
-          : prevData.comment,
-        
-        example: source.includes('fi') 
-          ? (prevData.example ? prevData.example + '\n' : '') + (autoFilledData.fi_data?.examples || '') 
-          : prevData.example
+        ...(source === 'eng'
+          ? {
+              translation: (prevData.translation ? prevData.translation + '\n' : '') + (autoFilledData.eng_data?.definitions || ''),
+              category: (prevData.category ? prevData.category + '\n' : '') + (autoFilledData.eng_data?.PoS || ''),
+              synonyms: (prevData.synonyms ? prevData.synonyms + '\n' : '') + (autoFilledData.eng_data?.synonyms || ''),
+              example: (prevData.example ? prevData.example + '\n' : '') + (autoFilledData.eng_data?.examples || ''),
+              word_formation: (prevData.word_formation ? prevData.word_formation + '\n' : '') + (autoFilledData.eng_data?.etymology || '')
+            }
+          : {
+              comment: (prevData.comment ? prevData.comment + '\n' : '') + (autoFilledData.fi_data?.definitions || ''),
+              example: (prevData.example ? prevData.example + '\n' : '') + (autoFilledData.fi_data?.examples || '')
+            })
       }));
-      
+
+      setSuccessMessage(
+        source === 'eng' && autoFilledData.eng_data?.error ? 'Слово не найдено в английской Wiki' :
+        source === 'fi' && autoFilledData.fi_data?.error ? 'Слово не найдено в финской Wiki' :
+        'Данные успешно загружены'
+      );
+
     } catch (error) {
       console.error('Ошибка при загрузке данных:', error);
     }
@@ -116,11 +104,9 @@ const AddWordForm = () => {
     const wordDataWithWord = { ...wordData, word }; // Добавляем слово в wordData
     try {
       if (isEditMode) {
-        console.log(wordData)
         await axios.put(`/api/words/${wordData.id}`, wordData);
         setSuccessMessage('Слово успешно обновлено!');
       } else {
-        console.log(wordDataWithWord)
         await axios.post('/api/words', wordDataWithWord);
         setSuccessMessage('Слово успешно добавлено!');
       }
@@ -138,44 +124,63 @@ const AddWordForm = () => {
       <div className="d-flex justify-content-center mb-2">
         <h2>{isEditMode ? 'Редактировать слово' : 'Добавить новое слово'}</h2>
       </div>
-      <div className="form-group input-short">
+      <div className="form-group input-short position-relative">
         <input
           type="text"
           value={word}
           onChange={(e) => setWord(e.target.value)}
           className="form-control"
           placeholder="Введите финское слово"
+          style={{ paddingRight: '30px' }}
         />
+        <button
+          onClick={() => setWord('')}
+          className="btn-clear"
+          style={{
+            position: 'absolute',
+            right: '10px',
+            top: '20%',
+            transform: 'translateY(-50%)',
+            background: 'none',
+            border: 'none',
+            cursor: 'pointer',
+            color: '#aaa',
+            fontSize: '18px',
+          }}
+        >
+          &times;
+        </button>
         <div className="d-flex justify-content-center mt-2">
-            <button 
-                onClick={checkIfWordExists} 
-                className="btn btn-warning mt-2"
-                disabled={isWordEmpty}
-            >
+          <button
+            onClick={checkIfWordExists}
+            className="btn btn-warning mt-2"
+            disabled={isWordEmpty}
+          >
             Проверить наличие в словаре
-            </button>
-            
+          </button>
         </div>
       </div>
 
       {successMessage && <p className="text-success mt-3">{successMessage}</p>}
 
       <div className="d-flex justify-content-around mb-3 mt-3">
-        <button 
-          onClick={() => fetchWordData('eng')} 
+        <button
+          onClick={() => fetchWordData('eng')}
           className="btn btn-info"
-          disabled={isWordEmpty}  // Деактивируем, если слово пустое
+          disabled={isWordEmpty}
         >
           Поиск англ. Wiki
         </button>
-        <button 
-          onClick={() => fetchWordData('fi')} 
+        <button
+          onClick={() => fetchWordData('fi')}
           className="btn btn-info"
-          disabled={isWordEmpty}  // Деактивируем, если слово пустое
+          disabled={isWordEmpty}
         >
           Поиск фин. Wiki
         </button>
       </div>
+
+      {/* Render form fields for word data (as in your original code) */}
 
       <div className="form-group">
         <label>Перевод на русский:</label>
@@ -300,10 +305,10 @@ const AddWordForm = () => {
 
       <div className="d-flex justify-content-center mt-2">
         <button className="btn btn-success mt-3" onClick={handleSaveWord} disabled={isWordEmpty}>
-            {isEditMode ? 'Изменить слово' : 'Добавить слово'}
+          {isEditMode ? 'Изменить слово' : 'Добавить слово'}
         </button>
       </div>
-      
+
     </div>
   );
 };

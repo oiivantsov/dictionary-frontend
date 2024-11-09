@@ -2,7 +2,8 @@ import React, { useState } from "react";
 import axios from "axios";
 import 'bootstrap/dist/css/bootstrap.min.css';  // Importing Bootstrap
 
-axios.defaults.baseURL = 'https://dict-backend.onrender.com';  // Replace with your actual backend URL if different
+axios.defaults.baseURL = 'https://dict-backend.onrender.com';
+// axios.defaults.baseURL = 'http://localhost:8000'; 
 
 const SearchWords = () => {
   const [searchTerm, setSearchTerm] = useState("");
