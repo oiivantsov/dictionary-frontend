@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import axios from "axios";
 import 'bootstrap/dist/css/bootstrap.min.css';
 
-axios.defaults.baseURL = 'https://dict-backend.onrender.com';
+axios.defaults.baseURL = 'https://dictionary-web-8pz3.onrender.com';
 // axios.defaults.baseURL = 'http://localhost:8000'; 
 
 const SearchWords = () => {
