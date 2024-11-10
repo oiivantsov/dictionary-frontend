@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import axios from "axios";
-import 'bootstrap/dist/css/bootstrap.min.css';  // Importing Bootstrap
+import 'bootstrap/dist/css/bootstrap.min.css';
 
 axios.defaults.baseURL = 'https://dict-backend.onrender.com';
 // axios.defaults.baseURL = 'http://localhost:8000'; 
@@ -10,6 +10,7 @@ const SearchWords = () => {
   const [searchBy, setSearchBy] = useState("word"); // Either 'word' or 'translation'
   const [results, setResults] = useState([]);
   const [selectedWord, setSelectedWord] = useState(null);
+  const [statusMessage, setStatusMessage] = useState("-");
 
   const handleSearch = async () => {
     if (!searchTerm.trim()) {
@@ -22,25 +23,41 @@ const SearchWords = () => {
           [searchBy]: searchTerm,
         },
       });
-      console.log(response)
+      console.log(response);
       if (response.data.length === 0) {
-        alert("Не найдено");
+        setStatusMessage("Слово не найдено");
+      } else {
+        setStatusMessage(""); // Clear status message if results are found
       }
       setResults(response.data);
       setSelectedWord(null); // Clear selected word if a new search is performed
     } catch (error) {
       console.error("Error fetching data:", error);
+      setStatusMessage("Произошла ошибка при поиске");
     }
   };
-  
 
   const handleWordClick = (word) => {
-    console.log(word)
+    console.log(word);
     setSelectedWord(word);
+    setStatusMessage("-");
   };
 
   const handleBack = () => {
     setSelectedWord(null); // Return to search results view
+  };
+
+  const handleDelete = async () => {
+    if (window.confirm("Вы уверены, что хотите удалить это слово?")) {
+      try {
+        await axios.delete(`/api/words/${selectedWord.id}`);
+        alert("Слово успешно удалено!");
+        setSelectedWord(null); // Return to search results view
+        handleSearch(); // Refresh search results after deletion
+      } catch (error) {
+        console.error("Ошибка при удалении слова:", error);
+      }
+    }
   };
 
   return (
@@ -79,7 +96,7 @@ const SearchWords = () => {
 
       {/* Word Detail Section */}
       {selectedWord ? (
-        <div className="card">
+        <div className="card p-3">
           <h2 className="card-title">{selectedWord.word}</h2>
           <p><strong>Перевод:</strong> {selectedWord.translation}</p>
           <p><strong>Категория:</strong> {selectedWord.category}</p>
@@ -96,9 +113,14 @@ const SearchWords = () => {
           <p><strong>Последняя дата повторения:</strong> {selectedWord.date_repeated}</p>
           <p><strong>Дни с последнего повторения:</strong> {selectedWord.days_since_last_repeat}</p>
           <p><strong>Топ 10,000:</strong> {selectedWord.frequency}</p>
-          <button className="btn btn-secondary mt-3" onClick={handleBack}>
-            Назад к результатам
-          </button>
+          <div className="d-flex justify-content-between mt-3">
+            <button className="btn btn-secondary" onClick={handleBack}>
+              Назад к результатам
+            </button>
+            <button className="btn btn-danger" onClick={handleDelete}>
+              Удалить слово
+            </button>
+          </div>
         </div>
       ) : (
         <div className="mt-4">
@@ -116,7 +138,7 @@ const SearchWords = () => {
               ))}
             </div>
           ) : (
-            <p className="text-center">Ничего не найдено</p>
+            <p className="text-center">{statusMessage || "status message"}</p>
           )}
         </div>
       )}
