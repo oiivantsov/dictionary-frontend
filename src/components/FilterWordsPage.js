@@ -41,7 +41,6 @@ const FilterWordsPage = () => {
     try {
       const updatedWord = { ...word, level: 1, date_repeated: selectedRepeatDate };
       await axios.put(`/api/words/${word.id}`, updatedWord);
-      alert('Слово добавлено на изучение!');
       fetchFilteredWords(); // Обновляем список после изменений
     } catch (error) {
       console.error('Ошибка при добавлении слова на изучение:', error);
@@ -252,6 +251,15 @@ const FilterWordsPage = () => {
               className="form-control"
               value={selectedWord.source}
               onChange={(e) => setSelectedWord({ ...selectedWord, source: e.target.value })}
+            />
+          </div>
+          <div className="form-group">
+            <label>Уровень:</label>
+            <input
+              type="number"
+              className="form-control"
+              value={selectedWord.level}
+              onChange={(e) => setSelectedWord({ ...selectedWord, level: e.target.value })}
             />
           </div>
           <div className="form-group">

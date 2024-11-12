@@ -93,7 +93,8 @@ const RepeatWords = () => {
       {!selectedWord ? (
         <>
           <h2>Повторение слов — Уровень {level}</h2>
-          <p>Максимальное количество дней с последнего повторения: {daysSinceLastRepeat}</p>
+          <p>Дней с даты повторения: {daysSinceLastRepeat}</p>
+          <p>Слов: {words.length}</p>
 
           {/* Селектор уровня */}
           <select
@@ -222,12 +223,14 @@ const RepeatWords = () => {
           </div>
           <div className="form-group mb-section">
             <label>На повторение:</label>
-            <input
-              type="number"
+            <select
               className="form-control"
               value={selectedWord.repeat_again}
               onChange={(e) => setSelectedWord({ ...selectedWord, repeat_again: e.target.value })}
-            />
+            >
+              <option value=""></option>
+              <option value="1">1</option>
+            </select>
           </div>
           <div className="form-group mb-section">
             <label>Комментарий:</label>
