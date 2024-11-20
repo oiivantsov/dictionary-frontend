@@ -12,8 +12,8 @@ const Navbar = () => {
         </div>
       </button>
       <div className="dropdown-content">
-        <Link to="/">Поиск слов</Link>
-        <Link to="/add-word">Добавить слово</Link>
+        <Link to="/">Словарик</Link>
+        <Link to="/add-word">Поиск слов</Link>
         <Link to="/search">Фильтр</Link>
         <Link to="/repeat-words">Повторение слов</Link>
         <Link to="/statistics">Статистика</Link>

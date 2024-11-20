@@ -69,12 +69,12 @@ const FilterWordsPage = () => {
 
   return (
     <div className="container mt-5">
-      <h2>Поиск слов по фильтрам</h2>
+      <h2>Фильтр</h2>
 
       {/* Форма фильтров */}
       <div className="filters mb-3">
         <div className="form-group">
-          <label htmlFor="daysSinceLastRepeat">Количество дней с последнего повторения:</label>
+          <label htmlFor="daysSinceLastRepeat">Дни с последнего повторения:</label>
           <input
             type="number"
             id="daysSinceLastRepeat"

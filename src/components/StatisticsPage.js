@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
+import { ClipLoader } from "react-spinners";
 
 const StatisticsPage = () => {
   const [statistics, setStatistics] = useState(null);
@@ -18,7 +19,12 @@ const StatisticsPage = () => {
   }, []);
 
   if (!statistics) {
-    return <div>Загрузка статистики...</div>;
+    return (
+      <div className="loading-container">
+        <ClipLoader size={35} color={"#555"} className="spinner" />
+        <span>Загрузка статистики...</span>
+      </div>
+    );
   }
 
   const allDays = statistics.allDays || [];
@@ -33,7 +39,6 @@ const StatisticsPage = () => {
       <p>Всего слов в словаре: {statistics.totalWords}</p>
       <p>Изучено слов: {statistics.studiedWords}</p>
 
-      <h3>Распределение слов по уровням и дням с последнего повторения</h3>
       <div style={{ overflowX: 'auto' }}>
         <table className="table table-dark-theme">
           <thead>

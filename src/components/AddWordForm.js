@@ -137,24 +137,24 @@ const AddWordForm = () => {
 
       {successMessage && <p className="status-text mt-3">{successMessage}</p>}
 
-      <div className="d-flex justify-content-around mb-3 mt-3">
+      <div className="button-container">
         <button
           onClick={() => handleFetchWordData('eng')}
-          className="btn btn-info"
+          className="btn btn-info action-button"
           disabled={isWordEmpty}
         >
           Поиск англ. Wiki
         </button>
         <button
           onClick={() => handleFetchWordData('fi')}
-          className="btn btn-info"
+          className="btn btn-info action-button"
           disabled={isWordEmpty}
         >
           Поиск фин. Wiki
         </button>
         <button
           onClick={() => handleFetchWordData('slang')}
-          className="btn btn-info"
+          className="btn btn-info action-button"
           disabled={isWordEmpty}
         >
           Поиск сленг

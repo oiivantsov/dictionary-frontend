@@ -31,13 +31,9 @@ body, html {
   font-size: 1.5rem;
   cursor: pointer;
   padding: 10px;
-  border-radius: 50%;
-  background-color: rgba(255, 255, 255, 0.2);
+  /* border-radius: 50%; */
+  /* background-color: rgba(255, 255, 255, 0.2); */
   transition: background-color 0.3s;
-}
-
-.theme-toggle:hover {
-  background-color: rgba(255, 255, 255, 0.5);
 }
 
 /* Add margin to the selector */
@@ -222,7 +218,6 @@ select.level-selector {
   color: #f0f0f0;
   padding: 20px;
   border-radius: 8px;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.5); /* Optional for separation */
 }
 
 /* Dark theme for form controls */
@@ -243,54 +238,11 @@ input::placeholder {
   /* font-style: italic; */
 }
 
-
-/* Dark theme buttons */
-.btn {
-  color: #f0f0f0;
-  background-color: #495057;
-  border: none;
-  transition: background-color 0.3s, color 0.3s;
-}
-
-.btn:hover {
-  background-color: #343a40;
-  color: #ffffff;
-}
-
-.btn-primary {
-  background-color: #007bff;
-}
-
-.btn-primary:hover {
-  background-color: #0056b3;
-}
-
-.btn-success {
-  background-color: #28a745;
-}
-
-.btn-success:hover {
-  background-color: #1e7e34;
-}
-
-.btn-secondary {
-  background-color: #6c757d;
-}
-
-.btn-secondary:hover {
-  background-color: #545b62;
-}
-
 /* List group items in dark theme */
 .list-group-item {
   background-color: #3e4449;
   color: #f0f0f0;
   border: 1px solid #495057;
-}
-
-.list-group-item:hover {
-  background-color: #495057;
-  color: #ffffff;
 }
 
 /* Dark theme card */
@@ -321,4 +273,60 @@ input::placeholder {
 .level-selector option {
   background-color: #3e4449;
   color: #f0f0f0;
+}
+
+.loading-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100vh; /* Full viewport height */
+  font-size: 18px;
+  color: #555; /* Subtle gray color */
+}
+
+.loading-container .spinner {
+  margin-right: 10px; /* Space between spinner and text */
+}
+
+.button-container {
+  display: flex;
+  flex-direction: column; /* Stack buttons vertically on small screens */
+  align-items: center;
+  gap: 10px; /* Space between buttons */
+  padding: 0 10px; /* Add padding for smaller screens */
+  margin: 20px 0 30px; /* Center the container */
+}
+
+.action-button {
+  width: 100%; /* Full width for better tap targets on phones */
+  max-width: 300px; /* Prevent buttons from becoming too wide */
+  font-size: 16px; /* Larger text for readability */
+  padding: 10px 15px; /* Increase padding for touch comfort */
+  border-radius: 5px; /* Rounded corners for a modern look */
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Subtle shadow for better visibility */
+}
+
+.form-group {
+  margin-bottom: 20px; /* Add space between each block */
+}
+
+textarea {
+  height: 150px; /* Default height for all textareas */
+}
+
+textarea.examples,
+textarea.comment {
+  height: 200px; /* Larger height for examples and comments */
+}
+
+@media (min-width: 768px) {
+  .button-container {
+    flex-direction: row; /* Arrange buttons horizontally on larger screens */
+    justify-content: center; /* Center horizontally */
+    gap: 20px; /* Increase space between buttons for desktop */
+  }
+
+  .action-button {
+    width: auto; /* Buttons take up only as much space as needed */
+  }
 }
