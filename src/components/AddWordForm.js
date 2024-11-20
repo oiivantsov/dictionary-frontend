@@ -113,23 +113,7 @@ const AddWordForm = () => {
           placeholder="Введите финское слово"
           style={{ paddingRight: '30px' }}
         />
-        <button
-          onClick={() => setWord('')}
-          className="btn-clear"
-          style={{
-            position: 'absolute',
-            right: '10px',
-            top: '20%',
-            transform: 'translateY(-50%)',
-            background: 'none',
-            border: 'none',
-            cursor: 'pointer',
-            color: '#aaa',
-            fontSize: '18px',
-          }}
-        >
-          &times;
-        </button>
+
         <div className="d-flex justify-content-center mt-2">
           <div className="d-flex justify-content-center mt-2">
             <button
