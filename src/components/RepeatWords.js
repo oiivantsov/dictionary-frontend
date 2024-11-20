@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import dayjs from 'dayjs';
+import { fetchWordData } from '../apiUtils';
+
 
 const RepeatWords = () => {
   const [level, setLevel] = useState(1);
@@ -9,6 +11,7 @@ const RepeatWords = () => {
   const [daysSinceLastRepeat, setDaysSinceLastRepeat] = useState(0); // Days since last repeat
   const [customDate, setCustomDate] = useState(dayjs().format('YYYY-MM-DD'));
   const [globalShowTranslation, setGlobalShowTranslation] = useState(true);
+  const [successMessage, setSuccessMessage] = useState('-');
 
   useEffect(() => {
     const fetchWords = async () => {
@@ -167,6 +170,39 @@ const RepeatWords = () => {
             Назад
           </button>
           <h2>Редактировать слово</h2>
+
+          <div className="d-flex justify-content-around mb-3 mt-3">
+            <button
+              onClick={() =>
+                fetchWordData(selectedWord.word, 'eng', setSelectedWord, setSuccessMessage)
+              }
+              className="btn btn-info"
+              disabled={!selectedWord.word}
+            >
+              Поиск англ. Wiki
+            </button>
+            <button
+              onClick={() =>
+                fetchWordData(selectedWord.word, 'fi', setSelectedWord, setSuccessMessage)
+              }
+              className="btn btn-info"
+              disabled={!selectedWord.word}
+            >
+              Поиск фин. Wiki
+            </button>
+            <button
+              onClick={() =>
+                fetchWordData(selectedWord.word, 'slang', setSelectedWord, setSuccessMessage)
+              }
+              className="btn btn-info"
+              disabled={!selectedWord.word}
+            >
+              Поиск сленг
+            </button>
+          </div>
+
+          {successMessage && <p className="status-text mt-3">{successMessage}</p>}
+
           <div className="form-group mb-section">
             <label>Финское слово:</label>
             <input
