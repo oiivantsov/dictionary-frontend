@@ -34,10 +34,18 @@ const StatisticsPage = () => {
 
   return (
     <div className="container mt-5">
-      <h2>Общая статистика</h2>
+      <h2>Cтатистика</h2>
 
-      <p>Всего слов в словаре: {statistics.totalWords}</p>
-      <p>Изучено слов: {statistics.studiedWords}</p>
+      <div className="statistics-container">
+        <div className="statistics-item">
+          <h5>Всего слов в словаре</h5>
+          <p>{statistics.totalWords}</p>
+        </div>
+        <div className="statistics-item">
+          <h5>Изучено слов</h5>
+          <p>{statistics.studiedWords}</p>
+        </div>
+      </div>
 
       <div style={{ overflowX: 'auto' }}>
         <table className="table table-dark-theme">

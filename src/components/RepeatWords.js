@@ -95,7 +95,7 @@ const RepeatWords = () => {
     <div className="container mt-5">
       {!selectedWord ? (
         <>
-          <h2>Повторение слов — Уровень {level}</h2>
+          <h2>Уровень {level}</h2>
           <p>Дней с даты повторения: {daysSinceLastRepeat}</p>
           <p>Слов: {words.length}</p>
 

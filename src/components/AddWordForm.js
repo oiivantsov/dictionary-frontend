@@ -165,137 +165,141 @@ const AddWordForm = () => {
 
       {/* Render form fields for word data (as in your original code) */}
 
-      <div className="form-group">
-        <label>Перевод на русский:</label>
-        <textarea
-          value={wordData.translation ?? ""}
-          onChange={(e) => setWordData({ ...wordData, translation: e.target.value || null })}
-          className="form-control"
-        />
-      </div>
+      <div className="fields-container">
 
-      <div className="form-group">
-        <label>Категория:</label>
-        <input
-          type="text"
-          value={wordData.category ?? ""}
-          onChange={(e) => setWordData({ ...wordData, category: e.target.value || null })}
-          className="form-control"
-        />
-      </div>
+        <div className="form-group">
+          <label>Перевод на русский:</label>
+          <textarea
+            value={wordData.translation ?? ""}
+            onChange={(e) => setWordData({ ...wordData, translation: e.target.value || null })}
+            className="form-control"
+          />
+        </div>
 
-      <div className="form-group">
-        <label>Категория 2:</label> {/* Новое поле */}
-        <input
-          type="text"
-          value={wordData.category2 ?? ""}
-          onChange={(e) => setWordData({ ...wordData, category2: e.target.value || null })}
-          className="form-control"
-        />
-      </div>
+        <div className="form-group">
+          <label>Категория:</label>
+          <input
+            type="text"
+            value={wordData.category ?? ""}
+            onChange={(e) => setWordData({ ...wordData, category: e.target.value || null })}
+            className="form-control"
+          />
+        </div>
 
-
-
-      <div className="form-group">
-        <label>Уровень:</label>
-        <input
-          type="number"
-          value={wordData.level ?? ""}
-          onChange={(e) => {
-            const newValue = e.target.value ? parseInt(e.target.value, 10) : null;
-            setWordData({ ...wordData, level: newValue });
-          }}
-          className="form-control"
-        />
-      </div>
-
-      <div className="form-group">
-        <label>Популярность:</label>
-        <input
-          type="number"
-          value={wordData.popularity ?? ""}
-          onChange={(e) => {
-            const newValue = e.target.value ? parseInt(e.target.value, 10) : null;
-            setWordData({ ...wordData, popularity: newValue });
-          }}
-          className="form-control"
-        />
-      </div>
+        <div className="form-group">
+          <label>Категория 2:</label> {/* Новое поле */}
+          <input
+            type="text"
+            value={wordData.category2 ?? ""}
+            onChange={(e) => setWordData({ ...wordData, category2: e.target.value || null })}
+            className="form-control"
+          />
+        </div>
 
 
 
-      <div className="form-group">
-        <label>Дата добавления:</label>
-        <input
-          type="date"
-          value={wordData.date_added ?? ""}
-          onChange={(e) => setWordData({ ...wordData, date_added: e.target.value || null })}
-          className="form-control"
-        />
-      </div>
+        <div className="form-group">
+          <label>Уровень:</label>
+          <input
+            type="number"
+            value={wordData.level ?? ""}
+            onChange={(e) => {
+              const newValue = e.target.value ? parseInt(e.target.value, 10) : null;
+              setWordData({ ...wordData, level: newValue });
+            }}
+            className="form-control"
+          />
+        </div>
 
-      <div className="form-group">
-        <label>Комментарий:</label>
-        <textarea
-          value={wordData.comment ?? ""}
-          onChange={(e) => setWordData({ ...wordData, comment: e.target.value || null })}
-          className="form-control"
-          style={{ height: "150px" }} // Adjust the height as desired
-        />
-      </div>
-
-      <div className="form-group">
-        <label>Примеры:</label>
-        <textarea
-          value={wordData.example ?? ""}
-          onChange={(e) => setWordData({ ...wordData, example: e.target.value || null })}
-          className="form-control"
-          style={{ height: "150px" }} // Adjust the height as desired
-        />
-      </div>
+        <div className="form-group">
+          <label>Популярность:</label>
+          <input
+            type="number"
+            value={wordData.popularity ?? ""}
+            onChange={(e) => {
+              const newValue = e.target.value ? parseInt(e.target.value, 10) : null;
+              setWordData({ ...wordData, popularity: newValue });
+            }}
+            className="form-control"
+          />
+        </div>
 
 
 
+        <div className="form-group">
+          <label>Дата добавления:</label>
+          <input
+            type="date"
+            value={wordData.date_added ?? ""}
+            onChange={(e) => setWordData({ ...wordData, date_added: e.target.value || null })}
+            className="form-control"
+          />
+        </div>
 
-      <div className="form-group">
-        <label>Источник:</label> {/* Новое поле */}
-        <input
-          type="text"
-          value={wordData.source ?? ""}
-          onChange={(e) => setWordData({ ...wordData, source: e.target.value || null })}
-          className="form-control"
-        />
-      </div>
+        <div className="form-group">
+          <label>Комментарий:</label>
+          <textarea
+            value={wordData.comment ?? ""}
+            onChange={(e) => setWordData({ ...wordData, comment: e.target.value || null })}
+            className="form-control"
+            style={{ height: "150px" }} // Adjust the height as desired
+          />
+        </div>
 
-      <div className="form-group">
-        <label>На повторение:</label> {/* Новое поле */}
-        <input
-          type="number"
-          value={wordData.repeat_again ?? ""}
-          onChange={(e) => {
-            const newValue = e.target.value ? parseInt(e.target.value, 10) : null;
-            setWordData({ ...wordData, repeat_again: newValue });
-          }}
-          className="form-control"
-        />
-      </div>
+        <div className="form-group">
+          <label>Примеры:</label>
+          <textarea
+            value={wordData.example ?? ""}
+            onChange={(e) => setWordData({ ...wordData, example: e.target.value || null })}
+            className="form-control"
+            style={{ height: "150px" }} // Adjust the height as desired
+          />
+        </div>
 
-      <div className="form-group">
-        <label>Синонимы:</label>
-        <textarea
-          value={wordData.synonyms ?? ""}
-          onChange={(e) => setWordData({ ...wordData, synonyms: e.target.value || null })}
-          className="form-control"
-        />
-      </div>
 
-      <div className="form-group">
-        <label>Словообразование:</label>
-        <textarea
-          value={wordData.word_formation ?? ""}
-          onChange={(e) => setWordData({ ...wordData, word_formation: e.target.value || null })}
-          className="form-control"
-        />
+
+
+        <div className="form-group">
+          <label>Источник:</label> {/* Новое поле */}
+          <input
+            type="text"
+            value={wordData.source ?? ""}
+            onChange={(e) => setWordData({ ...wordData, source: e.target.value || null })}
+            className="form-control"
+          />
+        </div>
+
+        <div className="form-group">
+          <label>На повторение:</label> {/* Новое поле */}
+          <input
+            type="number"
+            value={wordData.repeat_again ?? ""}
+            onChange={(e) => {
+              const newValue = e.target.value ? parseInt(e.target.value, 10) : null;
+              setWordData({ ...wordData, repeat_again: newValue });
+            }}
+            className="form-control"
+          />
+        </div>
+
+        <div className="form-group">
+          <label>Синонимы:</label>
+          <textarea
+            value={wordData.synonyms ?? ""}
+            onChange={(e) => setWordData({ ...wordData, synonyms: e.target.value || null })}
+            className="form-control"
+          />
+        </div>
+
+        <div className="form-group">
+          <label>Словообразование:</label>
+          <textarea
+            value={wordData.word_formation ?? ""}
+            onChange={(e) => setWordData({ ...wordData, word_formation: e.target.value || null })}
+            className="form-control"
+          />
+        </div>
+
       </div>
 
       {successMessage && <p className="status-text mt-3">{successMessage}</p>}

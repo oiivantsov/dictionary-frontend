@@ -72,7 +72,7 @@ const FilterWordsPage = () => {
       <h2>Фильтр</h2>
 
       {/* Форма фильтров */}
-      <div className="filters mb-3">
+      <div className="fields-container mb-3">
         <div className="form-group">
           <label htmlFor="daysSinceLastRepeat">Дни с последнего повторения:</label>
           <input
@@ -189,12 +189,20 @@ const FilterWordsPage = () => {
                   <div className="card-body">
                     <h5 className="card-title">{word.word}</h5>
                     <p className="card-text">{word.translation}</p>
-                    <button className="btn btn-success mr-2" onClick={() => handleAddToStudy(word)}>
-                      Добавить на изучение
-                    </button>
-                    <button className="btn btn-secondary" onClick={() => handleEditWord(word)}>
-                      Редактировать
-                    </button>
+                    <div className="button-container">
+                      <button
+                        className="btn btn-success action-button"
+                        onClick={() => handleAddToStudy(word)}
+                      >
+                        Учить
+                      </button>
+                      <button
+                        className="btn btn-secondary action-button"
+                        onClick={() => handleEditWord(word)}
+                      >
+                        Редактировать
+                      </button>
+                    </div>
                   </div>
                 </div>
               </div>
