@@ -26,7 +26,6 @@ const StatisticsPage = () => {
   const sortedDays = Array.isArray(allDays) ? allDays.sort((a, b) => a - b) : [];
   const uniqueValues = ['1,4', '8', '16', '33', '42', '51', '71', '100', '123', '123', '200', '300'];
 
-
   return (
     <div className="container mt-5">
       <h2>Общая статистика</h2>
@@ -36,14 +35,13 @@ const StatisticsPage = () => {
 
       <h3>Распределение слов по уровням и дням с последнего повторения</h3>
       <div style={{ overflowX: 'auto' }}>
-        <table className="table table-bordered">
+        <table className="table table-dark-theme">
           <thead>
             <tr>
               <th>Количество дней</th>
               {[...Array(12).keys()].map(level => (
-                <th
-                  key={level + 1}>Ур. {level + 1} 
-                  <span style={{ fontWeight: 'normal' }}> | {uniqueValues[level]}</span>
+                <th key={level + 1}>
+                  Ур. {level + 1} <span style={{ fontWeight: 'normal' }}> | {uniqueValues[level]}</span>
                 </th>
               ))}
             </tr>

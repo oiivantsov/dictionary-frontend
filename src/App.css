@@ -2,7 +2,7 @@
 body, html {
   margin: 0;
   padding: 0;
-  font-family: Arial, sans-serif;
+  font-family: Open Sans, sans-serif;
 }
 
 /* Light theme */
@@ -176,4 +176,143 @@ select.level-selector {
   margin-bottom: 20px;
 }
 
+/* Dark theme table styles */
+.table-dark-theme {
+  background-color: #343a40;
+  color: #f8f9fa;
+  border-collapse: collapse;
+  width: 100%;
+}
 
+.table-dark-theme th,
+.table-dark-theme td {
+  border: 1px solid #495057;
+  text-align: center;
+  padding: 8px;
+}
+
+.table-dark-theme th {
+  background-color: #495057;
+  color: #f8f9fa;
+  font-weight: bold;
+}
+
+.table-dark-theme td {
+  background-color: #3e4449;
+  color: #f8f9fa;
+}
+
+.table-dark-theme tr:nth-child(even) td {
+  background-color: #2c3035;
+}
+
+.table-dark-theme tr:hover td {
+  background-color: #495057;
+  color: #ffffff;
+}
+
+.table-dark-theme th span {
+  color: #adb5bd;
+  font-weight: normal;
+}
+
+/* Dark theme container styles */
+.container {
+  background-color: #2c2c2c;
+  color: #f0f0f0;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.5); /* Optional for separation */
+}
+
+/* Dark theme for form controls */
+.form-control {
+  background-color: #3e4449;
+  color: #f0f0f0;
+  border: 1px solid #495057;
+}
+
+.form-control:focus {
+  background-color: #495057;
+  color: #ffffff;
+  border-color: #adb5bd;
+}
+
+/* Dark theme buttons */
+.btn {
+  color: #f0f0f0;
+  background-color: #495057;
+  border: none;
+  transition: background-color 0.3s, color 0.3s;
+}
+
+.btn:hover {
+  background-color: #343a40;
+  color: #ffffff;
+}
+
+.btn-primary {
+  background-color: #007bff;
+}
+
+.btn-primary:hover {
+  background-color: #0056b3;
+}
+
+.btn-success {
+  background-color: #28a745;
+}
+
+.btn-success:hover {
+  background-color: #1e7e34;
+}
+
+.btn-secondary {
+  background-color: #6c757d;
+}
+
+.btn-secondary:hover {
+  background-color: #545b62;
+}
+
+/* List group items in dark theme */
+.list-group-item {
+  background-color: #3e4449;
+  color: #f0f0f0;
+  border: 1px solid #495057;
+}
+
+.list-group-item:hover {
+  background-color: #495057;
+  color: #ffffff;
+}
+
+/* Dark theme card */
+.card {
+  background-color: #3e4449;
+  color: #f0f0f0;
+  border: 1px solid #495057;
+  border-radius: 8px;
+}
+
+.card .btn {
+  margin-right: 10px;
+}
+
+/* Status text styling */
+.status-text {
+  color: #adb5bd;
+  font-weight: bold;
+}
+
+/* Dropdown for level selector */
+.level-selector {
+  background-color: #3e4449;
+  color: #f0f0f0;
+  border: 1px solid #495057;
+}
+
+.level-selector option {
+  background-color: #3e4449;
+  color: #f0f0f0;
+}
