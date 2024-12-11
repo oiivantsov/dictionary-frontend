@@ -96,6 +96,24 @@ const RepeatWords = () => {
     }
   };
 
+  const CustomArrow = ({ className, style, onClick }) => (
+    <div
+      className={className}
+      style={{
+        ...style,
+        display: 'block',
+        background: 'gray',
+        width: '60px', // Adjust the width
+        height: '60px', // Adjust the height
+        borderRadius: '50%', // Optional: Make it circular
+        fontSize: '20px', // Increase the font size
+        margin: '80px -10px 30px 10px', // Add some margin
+      }}
+      onClick={onClick}
+    />
+  );
+  
+
   const settings = {
     dots: false,
     infinite: true,
@@ -103,7 +121,11 @@ const RepeatWords = () => {
     slidesToShow: 1,
     slidesToScroll: 1,
     adaptiveHeight: true,
-    beforeChange: (oldIndex, newIndex) => setCurrentSlide(newIndex) // Update current slide index
+    // autoplay: true,
+    // autoplaySpeed: 5000,
+    beforeChange: (oldIndex, newIndex) => console.log(`Slide changed from ${oldIndex} to ${newIndex}`),
+    nextArrow: <CustomArrow />,
+    prevArrow: <CustomArrow />,
   };
 
 

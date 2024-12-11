@@ -371,7 +371,7 @@ textarea.comment {
 }
 
 .carousel-card {
-  height: 400px; /* Fixed height for cards */
+  height: 450px; /* Fixed height for cards */
   display: flex;
   flex-direction: column;
   justify-content: space-between;
@@ -383,11 +383,11 @@ textarea.comment {
 }
 
 .text-block {
-  height: 275px;
+  height: 325px;
   flex: 1; /* Allows it to take up available vertical space */
   overflow-y: auto; /* Enable scrolling for long content */
   margin-bottom: 2rem;
-  padding: 10px;
+  padding: 10px 20px; /* Add padding inside the block */
   background-color: #3e4449; /* Light background color */
 }
 
