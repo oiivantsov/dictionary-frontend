@@ -2,6 +2,9 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import dayjs from 'dayjs';
 import { fetchWordData } from '../apiUtils';
+import Slider from 'react-slick'; // For carousel view
+import "slick-carousel/slick/slick.css";
+import "slick-carousel/slick/slick-theme.css";
 
 
 const RepeatWords = () => {
@@ -12,6 +15,8 @@ const RepeatWords = () => {
   const [customDate, setCustomDate] = useState(dayjs().format('YYYY-MM-DD'));
   const [globalShowTranslation, setGlobalShowTranslation] = useState(true);
   const [successMessage, setSuccessMessage] = useState('-');
+  const [isCarouselView, setIsCarouselView] = useState(false);
+  const [currentSlide, setCurrentSlide] = useState(0);
 
   useEffect(() => {
     const fetchWords = async () => {
@@ -91,6 +96,17 @@ const RepeatWords = () => {
     }
   };
 
+  const settings = {
+    dots: false,
+    infinite: true,
+    speed: 500,
+    slidesToShow: 1,
+    slidesToScroll: 1,
+    adaptiveHeight: true,
+    beforeChange: (oldIndex, newIndex) => setCurrentSlide(newIndex) // Update current slide index
+  };
+
+
   return (
     <div className="container mt-5">
       {!selectedWord ? (
@@ -113,45 +129,95 @@ const RepeatWords = () => {
           </select>
 
           {/* Button to toggle all cards between words and translations */}
-          <button onClick={toggleAllWordsVisibility} className="btn btn-info mb-3">
-            {globalShowTranslation ? 'Показать слова' : 'Показать переводы'}
-          </button>
+          <div className="d-flex justify-content-between mb-3">
+            <button onClick={toggleAllWordsVisibility} className="btn btn-info">
+              {globalShowTranslation ? 'Показать слова' : 'Показать переводы'}
+            </button>
+            <button
+              onClick={() => setIsCarouselView(!isCarouselView)}
+              className="btn btn-secondary"
+            >
+              {isCarouselView ? 'Список' : 'Карусель'}
+            </button>
+          </div>
 
-          <ul className="list-group">
-            {Array.isArray(words) && words.length > 0 ? (
-              words.map((word) => (
-                <li key={word.id} className="list-group-item d-flex justify-content-between align-items-center">
-                  {/* В зависимости от состояния показываем слово или перевод */}
-                  <p className="mb-0 flex-grow-1 word-text">
-                    {word.showTranslation ? word.translation : word.word}
-                  </p>
-                  <div className="d-flex flex-column align-items-start">
-                    <button
-                      className="btn btn-primary word-button mb-2"
-                      style={{ width: '100px' }} // Фиксированная ширина кнопки
+          {!isCarouselView ? (
+            <ul className="list-group">
+              {Array.isArray(words) && words.length > 0 ? (
+                words.map((word) => (
+                  <li key={word.id} className="list-group-item d-flex justify-content-between align-items-center">
+                    {/* В зависимости от состояния показываем слово или перевод */}
+                    <p className="mb-0 flex-grow-1 word-text">
+                      {word.showTranslation ? word.translation : word.word}
+                    </p>
+                    <div className="d-flex flex-column align-items-start">
+                      <button
+                        className="btn btn-primary word-button mb-2"
+                        style={{ width: '100px' }} // Фиксированная ширина кнопки
+                        onClick={() => toggleWordVisibility(word.id)}
+                      >
+                        {word.showTranslation ? 'Слово' : 'Перевод'}
+                      </button>
+                      <button
+                        className="btn btn-success word-button"
+                        style={{ width: '100px' }} // Фиксированная ширина кнопки
+                        onClick={() => setSelectedWord(word)}
+                      >
+                        Детали
+                      </button>
+                    </div>
+                  </li>
+                ))
+              ) : (
+                <li className="list-group-item">Нет слов для отображения</li>
+              )}
+            </ul>
+          ) : (
+            <Slider {...settings}>
+              {Array.isArray(words) && words.length > 0 ? (
+                words.map((word, index) => (
+                  <div key={word.id} className="carousel-card">
+                    {/* Scrollable Text Block */}
+                    <div
+                      className={`text-block ${!word.showTranslation ? 'centered-text' : ''}`}
                       onClick={() => toggleWordVisibility(word.id)}
                     >
-                      {word.showTranslation ? 'Слово' : 'Перевод'}
-                    </button>
-                    <button
-                      className="btn btn-success word-button"
-                      style={{ width: '100px' }} // Фиксированная ширина кнопки
-                      onClick={() => setSelectedWord(word)}
-                    >
-                      Детали
-                    </button>
-                  </div>
-                </li>
-              ))
-            ) : (
-              <li className="list-group-item">Нет слов для отображения</li>
-            )}
-          </ul>
+                      <p className={`text ${!word.showTranslation ? 'large-text' : ''}`}>
+                        {word.showTranslation ? word.translation : word.word}
+                      </p>
+                    </div>
 
-          <div className="d-flex align-items-center mt-3">
-            <button className="btn btn-primary" onClick={handleNextLevel}>
-              Level up!
-            </button>
+                    {/* Button Block */}
+                    <div className="button-block">
+                      <button
+                        className="btn btn-success word-button"
+                        onClick={() => setSelectedWord(word)}
+                      >
+                        Детали
+                      </button>
+                      <button
+                        className="btn btn-primary word-button"
+                        onClick={() => toggleWordVisibility(word.id)}
+                      >
+                        {word.showTranslation ? 'Слово' : 'Перевод'}
+                      </button>
+
+                    </div>
+
+                    {/* Word Number */}
+                    <div className="word-number">
+                      {index + 1}/{words.length}
+                    </div>
+                  </div>
+                ))
+              ) : (
+                <div className="list-group-item">Нет слов для отображения</div>
+              )}
+            </Slider>
+          )}
+
+          <div className="level-up-block d-flex align-items-center mt-3">
+
             <input
               type="date"
               id="customDate"
@@ -160,6 +226,9 @@ const RepeatWords = () => {
               className="form-control mx-2"
               style={{ width: '150px' }} // Shorten the width of the date input
             />
+            <button className="btn btn-primary" onClick={handleNextLevel}>
+              Level up!
+            </button>
           </div>
 
 

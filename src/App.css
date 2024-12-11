@@ -369,3 +369,67 @@ textarea.comment {
   font-weight: bold;
   color: #f8f9fa; /* Darker text color for numbers */
 }
+
+.carousel-card {
+  height: 400px; /* Fixed height for cards */
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  overflow: hidden;
+  /* padding: 20px; */
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Optional shadow */
+}
+
+.text-block {
+  height: 275px;
+  flex: 1; /* Allows it to take up available vertical space */
+  overflow-y: auto; /* Enable scrolling for long content */
+  margin-bottom: 2rem;
+  padding: 10px;
+  background-color: #3e4449; /* Light background color */
+}
+
+.text-block.centered-text {
+  justify-content: center; /* Center horizontally */
+  align-items: center; /* Center vertically */
+  display: flex; /* Ensure Flexbox is applied */
+  overflow: hidden; /* Disable scrolling for centered text */
+}
+
+.text {
+  font-size: 1.2rem;
+  text-align: left;
+}
+
+.text.large-text {
+  font-size: 2rem; /* Adjust to desired size */
+  font-weight: bold; /* Optional: Make the text bold */
+  text-align: center; /* Center-align the text */
+}
+
+/* buttons horizontally and center */
+.button-block {
+  display: flex;
+  justify-content: center;
+  gap: 10px; /* Space between buttons */
+  margin-bottom: 10px;
+}
+
+.word-button {
+  width: 100px; /* Fixed button width */
+}
+
+.word-number {
+  text-align: center; /* Center-align the word number */
+  font-weight: bold;
+  font-size: 1rem; /* Adjust font size as needed */
+}
+
+.level-up-block {
+  display: flex;
+  justify-content: center;
+  gap: 10px; /* Space between buttons */
+  margin-top: 10px;
+}
