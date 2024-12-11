@@ -15,7 +15,7 @@ const RepeatWords = () => {
   const [customDate, setCustomDate] = useState(dayjs().format('YYYY-MM-DD'));
   const [globalShowTranslation, setGlobalShowTranslation] = useState(true);
   const [successMessage, setSuccessMessage] = useState('-');
-  const [isCarouselView, setIsCarouselView] = useState(false);
+  const [isCarouselView, setIsCarouselView] = useState(true);
   const [currentSlide, setCurrentSlide] = useState(0);
 
   useEffect(() => {
@@ -107,7 +107,7 @@ const RepeatWords = () => {
         height: '60px', // Adjust the height
         borderRadius: '50%', // Optional: Make it circular
         fontSize: '20px', // Increase the font size
-        margin: '80px -10px 30px 10px', // Add some margin
+        margin: '-10px -10px 30px 10px', // Add some margin
       }}
       onClick={onClick}
     />
