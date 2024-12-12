@@ -118,7 +118,7 @@ const RepeatWords = () => {
 
 
   const settings = {
-    dots: true,
+    dots: false,
     infinite: true,
     speed: 500,
     slidesToShow: 1,
@@ -140,19 +140,7 @@ const RepeatWords = () => {
           transition: "background 0.3s", // Smooth transition
         }}
       />
-    ),
-    appendDots: (dots) => (
-      <div
-        style={{
-          display: "flex",
-          justifyContent: "center",
-          alignItems: "center",
-          marginTop: "10px", // Adjust the position
-        }}
-      >
-        {dots}
-      </div>
-    ),
+    )
   };
 
 
