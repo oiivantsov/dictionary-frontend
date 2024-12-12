@@ -431,5 +431,5 @@ textarea.comment {
   display: flex;
   justify-content: center;
   gap: 10px; /* Space between buttons */
-  margin-top: 10px;
+  margin-top: 3rem !important;
 }

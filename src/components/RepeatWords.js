@@ -29,6 +29,7 @@ const RepeatWords = () => {
           showTranslation: globalShowTranslation
         }));
 
+
         setWords(wordsWithToggle);
 
         if (wordsWithToggle.length > 0) {
@@ -38,6 +39,7 @@ const RepeatWords = () => {
 
           setDaysSinceLastRepeat(maxDays);
         } else {
+          setCurrentSlide(0);
           setDaysSinceLastRepeat(0);
         }
 
@@ -47,6 +49,7 @@ const RepeatWords = () => {
     };
 
 
+    setCurrentSlide(0); // Reset the current slide index
     fetchWords();
   }, [level, globalShowTranslation]);
 
@@ -112,10 +115,10 @@ const RepeatWords = () => {
       onClick={onClick}
     />
   );
-  
+
 
   const settings = {
-    dots: false,
+    dots: true,
     infinite: true,
     speed: 500,
     slidesToShow: 1,
@@ -123,9 +126,33 @@ const RepeatWords = () => {
     adaptiveHeight: true,
     // autoplay: true,
     // autoplaySpeed: 5000,
-    beforeChange: (oldIndex, newIndex) => console.log(`Slide changed from ${oldIndex} to ${newIndex}`),
+    initialSlide: currentSlide,
+    beforeChange: (oldIndex, newIndex) => setCurrentSlide(newIndex),
     nextArrow: <CustomArrow />,
     prevArrow: <CustomArrow />,
+    customPaging: (i) => (
+      <div
+        style={{
+          width: "100%",
+          height: "5px", // Adjust height to make it look like a bar
+          background: "gray", // Default bar color
+          margin: "0 2px", // Space between bars
+          transition: "background 0.3s", // Smooth transition
+        }}
+      />
+    ),
+    appendDots: (dots) => (
+      <div
+        style={{
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+          marginTop: "10px", // Adjust the position
+        }}
+      >
+        {dots}
+      </div>
+    ),
   };
 
 
@@ -212,16 +239,16 @@ const RepeatWords = () => {
                     {/* Button Block */}
                     <div className="button-block">
                       <button
-                        className="btn btn-success word-button"
-                        onClick={() => setSelectedWord(word)}
-                      >
-                        Детали
-                      </button>
-                      <button
                         className="btn btn-primary word-button"
                         onClick={() => toggleWordVisibility(word.id)}
                       >
                         {word.showTranslation ? 'Слово' : 'Перевод'}
+                      </button>
+                      <button
+                        className="btn btn-success word-button"
+                        onClick={() => setSelectedWord(word)}
+                      >
+                        Детали
                       </button>
 
                     </div>
@@ -239,7 +266,9 @@ const RepeatWords = () => {
           )}
 
           <div className="level-up-block d-flex align-items-center mt-3">
-
+            <button className="btn btn-primary" onClick={handleNextLevel}>
+              Level up!
+            </button>
             <input
               type="date"
               id="customDate"
@@ -248,9 +277,7 @@ const RepeatWords = () => {
               className="form-control mx-2"
               style={{ width: '150px' }} // Shorten the width of the date input
             />
-            <button className="btn btn-primary" onClick={handleNextLevel}>
-              Level up!
-            </button>
+
           </div>
 
 
