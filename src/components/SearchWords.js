@@ -1,6 +1,8 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import axios from "axios";
 import 'bootstrap/dist/css/bootstrap.min.css';
+import { use } from "react";
+import { ClipLoader } from "react-spinners";
 
 axios.defaults.baseURL = 'https://dict-backend.onrender.com';
 // axios.defaults.baseURL = 'http://localhost:8000'; 
@@ -11,6 +13,29 @@ const SearchWords = () => {
   const [results, setResults] = useState([]);
   const [selectedWord, setSelectedWord] = useState(null);
   const [statusMessage, setStatusMessage] = useState("-");
+  const [loading, setLoading] = useState(false); // Add loading state
+
+  // Add simple search useEffect to start loading data on page load
+  useEffect(() => {
+    const fetchInitialData = async () => {
+      try {
+        setLoading(true); // Start loading
+        const response = await axios.get(`/api/words/search`, {
+          params: {
+            [searchBy]: "mennä", // Example default search term
+          },
+        });
+        setStatusMessage("Готов к работе!");
+      } catch (error) {
+        console.error("Error loading data:", error);
+        setStatusMessage("Какая-то ошибка при загрузке данных");
+      } finally {
+        setLoading(false); // End loading
+      }
+    };
+
+    fetchInitialData();
+  }, []); // Empty dependency array to run once on component mount
 
   const handleSearch = async () => {
     if (!searchTerm.trim()) {
@@ -18,6 +43,7 @@ const SearchWords = () => {
       return;
     }
     try {
+      setLoading(true);
       const response = await axios.get(`/api/words/search`, {
         params: {
           [searchBy]: searchTerm,
@@ -34,6 +60,8 @@ const SearchWords = () => {
     } catch (error) {
       console.error("Error fetching data:", error);
       setStatusMessage("Произошла ошибка при поиске");
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -86,13 +114,24 @@ const SearchWords = () => {
             </select>
           </div>
 
+          {/* Show Loading Indicator */}
+          {loading ? (
+            <div className="d-flex justify-content-center my-3">
+              <ClipLoader color="#007bff" size={50} />
+            </div>
+          ) : (
+
           <div className="form-group text-center mt-3">
             <button className="btn btn-primary w-50" onClick={handleSearch}>
               Поиск
             </button>
           </div>
+          )}
         </div>
       </div>
+
+
+
 
       {/* Word Detail Section */}
       {selectedWord ? (
@@ -142,6 +181,7 @@ const SearchWords = () => {
           )}
         </div>
       )}
+
     </div>
   );
 };
