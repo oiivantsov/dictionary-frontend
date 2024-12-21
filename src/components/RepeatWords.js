@@ -6,6 +6,7 @@ import Slider from 'react-slick'; // For carousel view
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 import SearchDialog from './SearchDialog';
+import DaysDialog from './DaysDialog';
 import FloatingSearchButton from './FloatingSearchButton';
 
 
@@ -21,6 +22,12 @@ const RepeatWords = () => {
   const [currentSlide, setCurrentSlide] = useState(0);
 
   const [isSearchDialogOpen, setSearchDialogOpen] = useState(false);
+  const [isDaysDialogOpen, setDaysDialogOpen] = useState(false);
+
+  const handleApplyDays = (days) => {
+    setDaysSinceLastRepeat(days); // Update state to trigger re-fetch
+  };
+
 
   const toggleSearchDialog = () => {
     setSearchDialogOpen(!isSearchDialogOpen);
@@ -29,37 +36,36 @@ const RepeatWords = () => {
   useEffect(() => {
     const fetchWords = async () => {
       try {
-        const response = await axios.get(`/api/words/repeat?level=${level}`);
+        const queryParams = new URLSearchParams({ level });
+        if (daysSinceLastRepeat > 0) {
+          queryParams.append('days_since_last_repeat', daysSinceLastRepeat);
+        }
 
-        // Initialize each word with a `showTranslation` property
+        const response = await axios.get(`/api/words/repeat?${queryParams.toString()}`);
         const wordsWithToggle = response.data.map((word) => ({
           ...word,
-          showTranslation: globalShowTranslation
+          showTranslation: globalShowTranslation,
         }));
-
 
         setWords(wordsWithToggle);
 
-        if (wordsWithToggle.length > 0) {
+        if (wordsWithToggle.length > 0 && daysSinceLastRepeat === 0) {
           const maxDays = wordsWithToggle
-            .map((word) => word.date_repeated ? dayjs().diff(dayjs(word.date_repeated), 'day') : 0)
+            .map((word) => (word.date_repeated ? dayjs().diff(dayjs(word.date_repeated), 'day') : 0))
             .reduce((max, current) => Math.max(max, current), 0);
-
           setDaysSinceLastRepeat(maxDays);
-        } else {
-          setCurrentSlide(0);
+        } else if (wordsWithToggle.length === 0) {
           setDaysSinceLastRepeat(0);
+          setCurrentSlide(0);
         }
-
       } catch (error) {
         console.error('Ошибка при загрузке слов:', error);
       }
     };
 
-
     setCurrentSlide(0); // Reset the current slide index
     fetchWords();
-  }, [level, globalShowTranslation]);
+  }, [level, globalShowTranslation, daysSinceLastRepeat]);
 
   const toggleWordVisibility = (id) => {
     setWords(words.map((word) =>
@@ -173,11 +179,21 @@ const RepeatWords = () => {
                 </option>
               ))}
             </select>
+
+            <button
+              className="btn btn-secondary show-days-button"
+              onClick={() => setDaysDialogOpen(true)}
+            >
+              +
+            </button>
+
+
+
             <button
               className="next-level-button"
               onClick={() => setLevel((prevLevel) => (Number(prevLevel) < 12 ? Number(prevLevel) + 1 : 1))}
             >
-              →
+              &#8250;
             </button>
           </div>
 
@@ -542,6 +558,12 @@ const RepeatWords = () => {
           <SearchDialog onClose={() => setSearchDialogOpen(false)} />
         )}
       </div>
+
+      <DaysDialog
+        isOpen={isDaysDialogOpen}
+        onClose={() => setDaysDialogOpen(false)}
+        onApply={handleApplyDays}
+      />
 
     </div>
   );
