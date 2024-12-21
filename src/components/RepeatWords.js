@@ -36,36 +36,37 @@ const RepeatWords = () => {
   useEffect(() => {
     const fetchWords = async () => {
       try {
-        const queryParams = new URLSearchParams({ level });
-        if (daysSinceLastRepeat > 0) {
-          queryParams.append('days_since_last_repeat', daysSinceLastRepeat);
-        }
+        const response = await axios.get(`/api/words/repeat?level=${level}`);
 
-        const response = await axios.get(`/api/words/repeat?${queryParams.toString()}`);
+        // Initialize each word with a `showTranslation` property
         const wordsWithToggle = response.data.map((word) => ({
           ...word,
-          showTranslation: globalShowTranslation,
+          showTranslation: globalShowTranslation
         }));
+
 
         setWords(wordsWithToggle);
 
-        if (wordsWithToggle.length > 0 && daysSinceLastRepeat === 0) {
+        if (wordsWithToggle.length > 0) {
           const maxDays = wordsWithToggle
-            .map((word) => (word.date_repeated ? dayjs().diff(dayjs(word.date_repeated), 'day') : 0))
+            .map((word) => word.date_repeated ? dayjs().diff(dayjs(word.date_repeated), 'day') : 0)
             .reduce((max, current) => Math.max(max, current), 0);
+
           setDaysSinceLastRepeat(maxDays);
-        } else if (wordsWithToggle.length === 0) {
-          setDaysSinceLastRepeat(0);
+        } else {
           setCurrentSlide(0);
+          setDaysSinceLastRepeat(0);
         }
+
       } catch (error) {
         console.error('Ошибка при загрузке слов:', error);
       }
     };
 
+
     setCurrentSlide(0); // Reset the current slide index
     fetchWords();
-  }, [level, globalShowTranslation, daysSinceLastRepeat]);
+  }, [level, globalShowTranslation]);
 
   const toggleWordVisibility = (id) => {
     setWords(words.map((word) =>
