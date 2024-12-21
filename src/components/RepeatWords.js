@@ -5,6 +5,8 @@ import { fetchWordData } from '../apiUtils';
 import Slider from 'react-slick'; // For carousel view
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
+import SearchDialog from './SearchDialog';
+import FloatingSearchButton from './FloatingSearchButton';
 
 
 const RepeatWords = () => {
@@ -17,6 +19,12 @@ const RepeatWords = () => {
   const [successMessage, setSuccessMessage] = useState('-');
   const [isCarouselView, setIsCarouselView] = useState(true);
   const [currentSlide, setCurrentSlide] = useState(0);
+
+  const [isSearchDialogOpen, setSearchDialogOpen] = useState(false);
+
+  const toggleSearchDialog = () => {
+    setSearchDialogOpen(!isSearchDialogOpen);
+  };
 
   useEffect(() => {
     const fetchWords = async () => {
@@ -55,7 +63,7 @@ const RepeatWords = () => {
 
   const toggleWordVisibility = (id) => {
     setWords(words.map((word) =>
-      word.id === id ? { ...word, showTranslation: !word.showTranslation } : word
+      word.id === id ? { ...word, showTranslation: !word.showTranslation, textType: 'word' } : word
     ));
   };
 
@@ -152,18 +160,27 @@ const RepeatWords = () => {
           <p>Дней с даты повторения: {daysSinceLastRepeat}</p>
           <p>Слов: {words.length}</p>
 
-          {/* Селектор уровня */}
-          <select
-            value={level}
-            onChange={(e) => setLevel(e.target.value)}
-            className="form-control mb-3 level-selector"
-          >
-            {[...Array(12).keys()].map((lvl) => (
-              <option key={lvl + 1} value={lvl + 1}>
-                Уровень {lvl + 1}
-              </option>
-            ))}
-          </select>
+          {/* Level Selector with Next Button */}
+          <div className="level-selector-container">
+            <select
+              value={level}
+              onChange={(e) => setLevel(parseInt(e.target.value, 10))}
+              className="level-selector"
+            >
+              {[...Array(12).keys()].map((lvl) => (
+                <option key={lvl + 1} value={lvl + 1}>
+                  Уровень {lvl + 1}
+                </option>
+              ))}
+            </select>
+            <button
+              className="next-level-button"
+              onClick={() => setLevel((prevLevel) => (Number(prevLevel) < 12 ? Number(prevLevel) + 1 : 1))}
+            >
+              →
+            </button>
+          </div>
+
 
           {/* Button to toggle all cards between words and translations */}
           <div className="d-flex justify-content-between mb-3">
@@ -210,19 +227,62 @@ const RepeatWords = () => {
               )}
             </ul>
           ) : (
-            <Slider {...settings}>
+            <Slider
+              {...settings}
+              arrows={Array.isArray(words) && words.length > 0}
+            >
               {Array.isArray(words) && words.length > 0 ? (
                 words.map((word, index) => (
                   <div key={word.id} className="carousel-card">
+
+                    {/* Content Type Label */}
+                    <div
+                      className="content-label"
+                      style={{
+                        color: word.showTranslation
+                          ? '#007bff' // Blue for translation
+                          : word.textType === 'comment'
+                            ? '#17a2b8' // Info color for comment
+                            : word.textType === 'example'
+                              ? '#ffc107' // Warning color for example
+                              : '#28a745', // Green for word
+                      }}
+                    >
+                      {'●'}
+                    </div>
+
                     {/* Scrollable Text Block */}
                     <div
-                      className={`text-block ${!word.showTranslation ? 'centered-text' : ''}`}
-                      onClick={() => toggleWordVisibility(word.id)}
+                      className={`text-block ${!word.showTranslation && word.textType !== 'comment' && word.textType !== 'example'
+                        ? 'centered-text'
+                        : ''
+                        }`}
+                      onClick={() =>
+                        setWords(
+                          words.map((w) =>
+                            w.id === word.id
+                              ? { ...w, showTranslation: !w.showTranslation, textType: 'word' } // Reset textType to 'word'
+                              : w
+                          )
+                        )
+                      }
                     >
-                      <p className={`text ${!word.showTranslation ? 'large-text' : ''}`}>
-                        {word.showTranslation ? word.translation : word.word}
+                      <p
+                        className={`text ${!word.showTranslation && word.textType !== 'comment' && word.textType !== 'example'
+                          ? 'large-text'
+                          : ''
+                          }`}
+                      >
+                        {word.showTranslation
+                          ? word.translation
+                          : word.textType === 'comment'
+                            ? word.comment || 'Нет комментариев'
+                            : word.textType === 'example'
+                              ? word.example || 'Нет примеров'
+                              : word.word}
                       </p>
                     </div>
+
 
                     {/* Button Block */}
                     <div className="button-block">
@@ -237,6 +297,35 @@ const RepeatWords = () => {
                         onClick={() => setSelectedWord(word)}
                       >
                         Детали
+                      </button>
+
+                      <button
+                        className="btn btn-info word-button"
+                        onClick={() =>
+                          setWords(
+                            words.map((w) =>
+                              w.id === word.id
+                                ? { ...w, showTranslation: false, textType: 'comment' }
+                                : w
+                            )
+                          )
+                        }
+                      >
+                        Коммент
+                      </button>
+                      <button
+                        className="btn btn-warning word-button"
+                        onClick={() =>
+                          setWords(
+                            words.map((w) =>
+                              w.id === word.id
+                                ? { ...w, showTranslation: false, textType: 'example' }
+                                : w
+                            )
+                          )
+                        }
+                      >
+                        Примеры
                       </button>
 
                     </div>
@@ -443,6 +532,17 @@ const RepeatWords = () => {
           </button>
         </div>
       )}
+
+      <div>
+        {/* Floating Search Button */}
+        <FloatingSearchButton onClick={() => setSearchDialogOpen(true)} />
+
+        {/* Dialog */}
+        {isSearchDialogOpen && (
+          <SearchDialog onClose={() => setSearchDialogOpen(false)} />
+        )}
+      </div>
+
     </div>
   );
 };
