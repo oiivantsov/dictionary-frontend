@@ -15,6 +15,7 @@ const RepeatWords = () => {
   const [words, setWords] = useState([]);
   const [selectedWord, setSelectedWord] = useState(null); // Выбранное слово для редактирования
   const [daysSinceLastRepeat, setDaysSinceLastRepeat] = useState(0); // Days since last repeat
+  const [levelDays, setLevelDays] = useState([]); // Days for each level  
   const [customDate, setCustomDate] = useState(dayjs().format('YYYY-MM-DD'));
   const [globalShowTranslation, setGlobalShowTranslation] = useState(true);
   const [successMessage, setSuccessMessage] = useState('-');
@@ -24,19 +25,21 @@ const RepeatWords = () => {
   const [isSearchDialogOpen, setSearchDialogOpen] = useState(false);
   const [isDaysDialogOpen, setDaysDialogOpen] = useState(false);
 
-  const handleApplyDays = (days) => {
-    setDaysSinceLastRepeat(days); // Update state to trigger re-fetch
-  };
-
-
-  const toggleSearchDialog = () => {
-    setSearchDialogOpen(!isSearchDialogOpen);
-  };
+  const [refreshKey, setRefreshKey] = useState(0); // just to refresh the page
 
   useEffect(() => {
     const fetchWords = async () => {
       try {
         const response = await axios.get(`/api/words/repeat?level=${level}`);
+
+        // Fetch level days
+        const response1 = await axios.get(`/api/words/level-days`);
+        const levelDaysMap = Array(12).fill("-"); // Default to "-"
+        response1.data.forEach(([level, days]) => {
+          levelDaysMap[level - 1] = days; // Map level to index (level - 1)
+        });
+        setLevelDays(levelDaysMap);
+
 
         // Initialize each word with a `showTranslation` property
         const wordsWithToggle = response.data.map((word) => ({
@@ -44,19 +47,8 @@ const RepeatWords = () => {
           showTranslation: globalShowTranslation
         }));
 
-
         setWords(wordsWithToggle);
-
-        if (wordsWithToggle.length > 0) {
-          const maxDays = wordsWithToggle
-            .map((word) => word.date_repeated ? dayjs().diff(dayjs(word.date_repeated), 'day') : 0)
-            .reduce((max, current) => Math.max(max, current), 0);
-
-          setDaysSinceLastRepeat(maxDays);
-        } else {
-          setCurrentSlide(0);
-          setDaysSinceLastRepeat(0);
-        }
+        setDaysSinceLastRepeat(wordsWithToggle.length > 0 ? wordsWithToggle[0].dayssincelastrepeat : 0);
 
       } catch (error) {
         console.error('Ошибка при загрузке слов:', error);
@@ -66,7 +58,29 @@ const RepeatWords = () => {
 
     setCurrentSlide(0); // Reset the current slide index
     fetchWords();
-  }, [level, globalShowTranslation]);
+  }, [level, globalShowTranslation, refreshKey]);
+
+  // apply filter for days since last repeat
+  const fetchWordsDaysFilter = async (days) => {
+    try {
+      const response = await axios.get(`/api/words/repeat?level=${level}&days_since_last_repeat=${days}`);
+
+      if (response.data.length > 0) {
+
+        const wordsWithToggle = response.data.map((word) => ({
+          ...word,
+          showTranslation: globalShowTranslation
+        }));
+
+        setWords(wordsWithToggle);
+        setDaysSinceLastRepeat(days);
+      } else {
+        alert('Нет слов для отображения');
+      }
+    } catch (error) {
+      console.error('Ошибка при загрузке слов:', error);
+    }
+  };
 
   const toggleWordVisibility = (id) => {
     setWords(words.map((word) =>
@@ -109,6 +123,10 @@ const RepeatWords = () => {
       console.log(updatedWords)
       await axios.post(`/api/words/upgrade`, updatedWords);
       alert('Слова перенесены на следующий уровень!');
+      
+      // Refresh page
+      setRefreshKey((prevKey) => prevKey + 1);
+
     } catch (error) {
       console.error('Ошибка при обновлении уровня:', error);
     }
@@ -174,11 +192,14 @@ const RepeatWords = () => {
               onChange={(e) => setLevel(parseInt(e.target.value, 10))}
               className="level-selector"
             >
-              {[...Array(12).keys()].map((lvl) => (
-                <option key={lvl + 1} value={lvl + 1}>
-                  Уровень {lvl + 1}
-                </option>
-              ))}
+              {[...Array(12).keys()].map((lvl) => {
+                const days = levelDays[lvl] !== undefined ? levelDays[lvl] : "-";
+                return (
+                  <option key={lvl + 1} value={lvl + 1}>
+                    Уровень {lvl + 1} ({days})
+                  </option>
+                );
+              })}
             </select>
 
             <button
@@ -563,7 +584,7 @@ const RepeatWords = () => {
       <DaysDialog
         isOpen={isDaysDialogOpen}
         onClose={() => setDaysDialogOpen(false)}
-        onApply={handleApplyDays}
+        onApply={fetchWordsDaysFilter}
       />
 
     </div>

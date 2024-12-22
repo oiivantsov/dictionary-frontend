@@ -171,8 +171,8 @@ select {
   display: flex;
   align-items: center;
   justify-content: center; /* Center-align the elements */
-  gap: 10px; /* Add spacing between the select and button */
   margin-bottom: 20px; /* Add some space below the container */
+
 }
 
 select.level-selector {
@@ -188,6 +188,23 @@ select.level-selector {
   transition: border-color 0.3s ease; /* Smooth focus effect */
 }
 
+.show-days-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  font-size: 1rem; /* Larger font for the arrow */
+  font-weight: bold;
+  background-color: #3e4449; /* Blue background */
+  color: white; /* White text */
+  border: 1px solid #ccc;
+  border-radius: 4px; /* Circular button */
+  cursor: pointer;
+  /* padding-bottom: 10px; */
+  margin-right: 5px;
+}
+
 
 button.next-level-button {
   display: flex;
@@ -195,9 +212,9 @@ button.next-level-button {
   justify-content: center;
   width: 100px;
   height: 40px;
-  font-size: 2.5rem; /* Larger font for the arrow */
+  font-size: 1.5rem; /* Larger font for the arrow */
   font-weight: bold;
-  background-color: #47663f; /* Blue background */
+  background-color: #3e4449; /* Blue background */
   color: white; /* White text */
   border: 1px solid #ccc;
   border-radius: 4px; /* Circular button */
@@ -667,18 +684,3 @@ textarea.comment {
   color: #f00;
 }
 
-.show-days-button {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 40px;
-  height: 40px;
-  font-size: 1rem; /* Larger font for the arrow */
-  font-weight: bold;
-  background-color: #3e4449; /* Blue background */
-  color: white; /* White text */
-  border: 1px solid #ccc;
-  border-radius: 4px; /* Circular button */
-  cursor: pointer;
-  /* padding-bottom: 10px; */
-}
