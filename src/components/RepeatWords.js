@@ -8,6 +8,7 @@ import "slick-carousel/slick/slick-theme.css";
 import SearchDialog from './SearchDialog';
 import DaysDialog from './DaysDialog';
 import FloatingSearchButton from './FloatingSearchButton';
+import { InfinitySpin } from 'react-loader-spinner';
 
 
 const RepeatWords = () => {
@@ -26,10 +27,12 @@ const RepeatWords = () => {
   const [isDaysDialogOpen, setDaysDialogOpen] = useState(false);
 
   const [refreshKey, setRefreshKey] = useState(0); // just to refresh the page
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const fetchWords = async () => {
       try {
+        setLoading(true);
         const response = await axios.get(`/api/words/repeat?level=${level}`);
 
         // Fetch level days
@@ -40,6 +43,7 @@ const RepeatWords = () => {
         });
         setLevelDays(levelDaysMap);
 
+        setLoading(false);
 
         // Initialize each word with a `showTranslation` property
         const wordsWithToggle = response.data.map((word) => ({
@@ -55,15 +59,17 @@ const RepeatWords = () => {
       }
     };
 
-
     setCurrentSlide(0); // Reset the current slide index
     fetchWords();
+    
   }, [level, globalShowTranslation, refreshKey]);
 
   // apply filter for days since last repeat
   const fetchWordsDaysFilter = async (days) => {
     try {
+      setLoading(true);
       const response = await axios.get(`/api/words/repeat?level=${level}&days_since_last_repeat=${days}`);
+      setLoading(false);
 
       if (response.data.length > 0) {
 
@@ -123,7 +129,7 @@ const RepeatWords = () => {
       console.log(updatedWords)
       await axios.post(`/api/words/upgrade`, updatedWords);
       alert('Слова перенесены на следующий уровень!');
-      
+
       // Refresh page
       setRefreshKey((prevKey) => prevKey + 1);
 
@@ -176,6 +182,13 @@ const RepeatWords = () => {
     )
   };
 
+
+  if (loading)
+    return (
+      <div className="loading-container">
+        <InfinitySpin width="200" color="#4fa94d" />
+      </div>
+    );
 
   return (
     <div className="container mt-5">
