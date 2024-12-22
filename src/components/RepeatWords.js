@@ -62,7 +62,7 @@ const RepeatWords = () => {
     setCurrentSlide(0); // Reset the current slide index
     fetchWords();
 
-  }, [level, globalShowTranslation, refreshKey]);
+  }, [level, refreshKey]);
 
   // apply filter for days since last repeat
   const fetchWordsDaysFilter = async (days) => {
