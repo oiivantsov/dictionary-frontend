@@ -61,7 +61,7 @@ const RepeatWords = () => {
 
     setCurrentSlide(0); // Reset the current slide index
     fetchWords();
-    
+
   }, [level, globalShowTranslation, refreshKey]);
 
   // apply filter for days since last repeat
@@ -182,21 +182,31 @@ const RepeatWords = () => {
     )
   };
 
-
-  if (loading)
-    return (
-      <div className="loading-container">
-        <InfinitySpin width="200" color="#4fa94d" />
-      </div>
-    );
-
   return (
     <div className="container mt-5">
       {!selectedWord ? (
         <>
           <h2>Уровень {level}</h2>
-          <p>Дней с даты повторения: {daysSinceLastRepeat}</p>
-          <p>Слов: {words.length}</p>
+          {loading ? (
+            <div className="loading-container-small">
+              <InfinitySpin width="200" color="#4fa94d" />
+            </div>
+          ) : (
+            <>
+              {/* <p>Дней с даты повторения: {daysSinceLastRepeat}</p> */}
+              {/* <p>Слов: {words.length}</p> */}
+              <div className="statistics-container">
+                <div className="statistics-item">
+                  <h5>Дней</h5>
+                  <p>{daysSinceLastRepeat}</p>
+                </div>
+                <div className="statistics-item">
+                  <h5>Слов</h5>
+                  <p>{words.length}</p>
+                </div>
+              </div>
+            </>
+          )}
 
           {/* Level Selector with Next Button */}
           <div className="level-selector-container">
@@ -246,151 +256,159 @@ const RepeatWords = () => {
             </button>
           </div>
 
-          {!isCarouselView ? (
-            <ul className="list-group">
-              {Array.isArray(words) && words.length > 0 ? (
-                words.map((word) => (
-                  <li key={word.id} className="list-group-item d-flex justify-content-between align-items-center">
-                    {/* В зависимости от состояния показываем слово или перевод */}
-                    <p className="mb-0 flex-grow-1 word-text">
-                      {word.showTranslation ? word.translation : word.word}
-                    </p>
-                    <div className="d-flex flex-column align-items-start">
-                      <button
-                        className="btn btn-primary word-button mb-2"
-                        style={{ width: '100px' }} // Фиксированная ширина кнопки
-                        onClick={() => toggleWordVisibility(word.id)}
-                      >
-                        {word.showTranslation ? 'Слово' : 'Перевод'}
-                      </button>
-                      <button
-                        className="btn btn-success word-button"
-                        style={{ width: '100px' }} // Фиксированная ширина кнопки
-                        onClick={() => setSelectedWord(word)}
-                      >
-                        Детали
-                      </button>
-                    </div>
-                  </li>
-                ))
-              ) : (
-                <li className="list-group-item">Нет слов для отображения</li>
-              )}
-            </ul>
+          {loading ? (
+            <div className="loading-container-average">
+              <InfinitySpin width="200" color="#4fa94d" />
+            </div>
           ) : (
-            <Slider
-              {...settings}
-              arrows={Array.isArray(words) && words.length > 0}
-            >
-              {Array.isArray(words) && words.length > 0 ? (
-                words.map((word, index) => (
-                  <div key={word.id} className="carousel-card">
-
-                    {/* Content Type Label */}
-                    <div
-                      className="content-label"
-                      style={{
-                        color: word.showTranslation
-                          ? '#007bff' // Blue for translation
-                          : word.textType === 'comment'
-                            ? '#17a2b8' // Info color for comment
-                            : word.textType === 'example'
-                              ? '#ffc107' // Warning color for example
-                              : '#28a745', // Green for word
-                      }}
-                    >
-                      {'●'}
-                    </div>
-
-                    {/* Scrollable Text Block */}
-                    <div
-                      className={`text-block ${!word.showTranslation && word.textType !== 'comment' && word.textType !== 'example'
-                        ? 'centered-text'
-                        : ''
-                        }`}
-                      onClick={() =>
-                        setWords(
-                          words.map((w) =>
-                            w.id === word.id
-                              ? { ...w, showTranslation: !w.showTranslation, textType: 'word' } // Reset textType to 'word'
-                              : w
-                          )
-                        )
-                      }
-                    >
-                      <p
-                        className={`text ${!word.showTranslation && word.textType !== 'comment' && word.textType !== 'example'
-                          ? 'large-text'
-                          : ''
-                          }`}
-                      >
-                        {word.showTranslation
-                          ? word.translation
-                          : word.textType === 'comment'
-                            ? word.comment || 'Нет комментариев'
-                            : word.textType === 'example'
-                              ? word.example || 'Нет примеров'
-                              : word.word}
-                      </p>
-                    </div>
-
-
-                    {/* Button Block */}
-                    <div className="button-block">
-                      <button
-                        className="btn btn-primary word-button"
-                        onClick={() => toggleWordVisibility(word.id)}
-                      >
-                        {word.showTranslation ? 'Слово' : 'Перевод'}
-                      </button>
-                      <button
-                        className="btn btn-success word-button"
-                        onClick={() => setSelectedWord(word)}
-                      >
-                        Детали
-                      </button>
-
-                      <button
-                        className="btn btn-info word-button"
-                        onClick={() =>
-                          setWords(
-                            words.map((w) =>
-                              w.id === word.id
-                                ? { ...w, showTranslation: false, textType: 'comment' }
-                                : w
-                            )
-                          )
-                        }
-                      >
-                        Коммент
-                      </button>
-                      <button
-                        className="btn btn-warning word-button"
-                        onClick={() =>
-                          setWords(
-                            words.map((w) =>
-                              w.id === word.id
-                                ? { ...w, showTranslation: false, textType: 'example' }
-                                : w
-                            )
-                          )
-                        }
-                      >
-                        Примеры
-                      </button>
-
-                    </div>
-
-                    {/* Word Number */}
-                    <div className="word-number">
-                      {index + 1}/{words.length}
-                    </div>
-                  </div>
-                ))
+            <>
+              {!isCarouselView ? (
+                <ul className="list-group">
+                  {Array.isArray(words) && words.length > 0 ? (
+                    words.map((word) => (
+                      <li key={word.id} className="list-group-item d-flex justify-content-between align-items-center">
+                        {/* В зависимости от состояния показываем слово или перевод */}
+                        <p className="mb-0 flex-grow-1 word-text">
+                          {word.showTranslation ? word.translation : word.word}
+                        </p>
+                        <div className="d-flex flex-column align-items-start">
+                          <button
+                            className="btn btn-primary word-button mb-2"
+                            style={{ width: '100px' }} // Фиксированная ширина кнопки
+                            onClick={() => toggleWordVisibility(word.id)}
+                          >
+                            {word.showTranslation ? 'Слово' : 'Перевод'}
+                          </button>
+                          <button
+                            className="btn btn-success word-button"
+                            style={{ width: '100px' }} // Фиксированная ширина кнопки
+                            onClick={() => setSelectedWord(word)}
+                          >
+                            Детали
+                          </button>
+                        </div>
+                      </li>
+                    ))
+                  ) : (
+                    <li className="list-group-item">Нет слов для отображения</li>
+                  )}
+                </ul>
               ) : (
-                <div className="list-group-item">Нет слов для отображения</div>
+                <Slider
+                  {...settings}
+                  arrows={Array.isArray(words) && words.length > 0}
+                >
+                  {Array.isArray(words) && words.length > 0 ? (
+                    words.map((word, index) => (
+                      <div key={word.id} className="carousel-card">
+
+                        {/* Content Type Label */}
+                        <div
+                          className="content-label"
+                          style={{
+                            color: word.showTranslation
+                              ? '#007bff' // Blue for translation
+                              : word.textType === 'comment'
+                                ? '#17a2b8' // Info color for comment
+                                : word.textType === 'example'
+                                  ? '#ffc107' // Warning color for example
+                                  : '#28a745', // Green for word
+                          }}
+                        >
+                          {'●'}
+                        </div>
+
+                        {/* Scrollable Text Block */}
+                        <div
+                          className={`text-block ${!word.showTranslation && word.textType !== 'comment' && word.textType !== 'example'
+                            ? 'centered-text'
+                            : ''
+                            }`}
+                          onClick={() =>
+                            setWords(
+                              words.map((w) =>
+                                w.id === word.id
+                                  ? { ...w, showTranslation: !w.showTranslation, textType: 'word' } // Reset textType to 'word'
+                                  : w
+                              )
+                            )
+                          }
+                        >
+                          <p
+                            className={`text ${!word.showTranslation && word.textType !== 'comment' && word.textType !== 'example'
+                              ? 'large-text'
+                              : ''
+                              }`}
+                          >
+                            {word.showTranslation
+                              ? word.translation
+                              : word.textType === 'comment'
+                                ? word.comment || 'Нет комментариев'
+                                : word.textType === 'example'
+                                  ? word.example || 'Нет примеров'
+                                  : word.word}
+                          </p>
+                        </div>
+
+
+                        {/* Button Block */}
+                        <div className="button-block">
+                          <button
+                            className="btn btn-primary word-button"
+                            onClick={() => toggleWordVisibility(word.id)}
+                          >
+                            {word.showTranslation ? 'Слово' : 'Перевод'}
+                          </button>
+                          <button
+                            className="btn btn-success word-button"
+                            onClick={() => setSelectedWord(word)}
+                          >
+                            Детали
+                          </button>
+
+                          <button
+                            className="btn btn-info word-button"
+                            onClick={() =>
+                              setWords(
+                                words.map((w) =>
+                                  w.id === word.id
+                                    ? { ...w, showTranslation: false, textType: 'comment' }
+                                    : w
+                                )
+                              )
+                            }
+                          >
+                            Коммент
+                          </button>
+                          <button
+                            className="btn btn-warning word-button"
+                            onClick={() =>
+                              setWords(
+                                words.map((w) =>
+                                  w.id === word.id
+                                    ? { ...w, showTranslation: false, textType: 'example' }
+                                    : w
+                                )
+                              )
+                            }
+                          >
+                            Примеры
+                          </button>
+
+                        </div>
+
+                        {/* Word Number */}
+                        <div className="word-number">
+                          {index + 1}/{words.length}
+                        </div>
+                      </div>
+                    ))
+                  ) : (
+                    <div className="list-group-item">Нет слов для отображения</div>
+                  )}
+                </Slider>
               )}
-            </Slider>
+            </>
           )}
 
           <div className="level-up-block d-flex align-items-center mt-3">

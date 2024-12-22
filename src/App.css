@@ -343,6 +343,34 @@ input::placeholder {
   margin-right: 10px; /* Space between spinner and text */
 }
 
+.loading-container-small {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100px;
+  background-color: #3e4449; /* Light background for contrast */
+  border: 1px solid; /* Subtle border */
+  border-radius: 4px; /* Rounded corners */
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); /* Light shadow for depth */
+  font-size: 18px;
+  color: #555; /* Subtle gray color */
+  margin-bottom: 20px;
+}
+
+.loading-container-average {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 455px;
+  background-color: #3e4449; /* Light background for contrast */
+  border: 1px solid; /* Subtle border */
+  border-radius: 4px; /* Rounded corners */
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); /* Light shadow for depth */
+  font-size: 18px;
+  color: #555; /* Subtle gray color */
+  margin-bottom: 20px;
+}
+
 .button-container {
   display: flex;
   flex-direction: column; /* Stack buttons vertically on small screens */
@@ -391,11 +419,12 @@ textarea.comment {
 
 .statistics-container {
   display: flex; /* Arrange items side by side */
+  height: 100px;
   gap: 14px; /* Space between items */
-  padding: 20px; /* Add padding around the container */
-  background-color: #343a40; /* Light background for contrast */
+  padding: 10px; /* Add padding around the container */
+  background-color: #3e4449; /* Light background for contrast */
   border: 1px solid; /* Subtle border */
-  border-radius: 2px; /* Rounded corners */
+  border-radius: 4px; /* Rounded corners */
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); /* Light shadow for depth */
   margin-bottom: 20px;
 }
@@ -420,7 +449,7 @@ textarea.comment {
 }
 
 .carousel-card {
-  height: 450px; /* Fixed height for cards */
+  height: 455px; /* Fixed height for cards */
   display: flex;
   flex-direction: column;
   justify-content: space-between;
