@@ -28,6 +28,7 @@ const RepeatWords = () => {
 
   const [refreshKey, setRefreshKey] = useState(0); // just to refresh the page
   const [loading, setLoading] = useState(true);
+  const [loadingLevelUp, setLoadingLevelUp] = useState(false);
 
   useEffect(() => {
     const fetchWords = async () => {
@@ -120,14 +121,15 @@ const RepeatWords = () => {
 
   // Функция для обновления уровня всех слов
   const handleNextLevel = async () => {
+    setLoadingLevelUp(true);
     try {
       const updatedWords = {
         level,
         daysSinceLastRepeat,
         date_repeated: customDate
       };
-      console.log(updatedWords)
       await axios.post(`/api/words/upgrade`, updatedWords);
+      setLoadingLevelUp(false);
       alert('Слова перенесены на следующий уровень!');
 
       // Refresh page
@@ -412,8 +414,14 @@ const RepeatWords = () => {
           )}
 
           <div className="level-up-block d-flex align-items-center mt-3">
-            <button className="btn btn-primary" onClick={handleNextLevel}>
-              Level up!
+            <button className="btn btn-primary" onClick={handleNextLevel} disabled={loadingLevelUp}>
+              {loadingLevelUp ? (
+                <span className="loading-dots">
+                  Loading<span>.</span><span>.</span><span>.</span>
+                </span>
+              ) : (
+                "Level up!"
+              )}
             </button>
             <input
               type="date"
