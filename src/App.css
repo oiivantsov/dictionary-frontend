@@ -313,6 +313,39 @@ input::placeholder {
   margin-right: 10px;
 }
 
+.filter-page-card {
+  min-height: 150px;
+  padding: 10px;
+  border-radius: 8px;
+}
+
+.filter-page-card-body {
+  font-size: 0.9rem;
+}
+
+.filter-page-header {
+  font-size: 1rem;
+  display: flex;
+  align-items: center;
+}
+
+.filter-page-checkbox {
+  width: 20px;
+  height: 20px;
+}
+
+.filter-page-text {
+  font-size: 0.9rem;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.filter-page-button-container .btn {
+  padding: 5px 10px;
+}
+
+
 /* Status text styling */
 .status-text {
   color: #adb5bd;
