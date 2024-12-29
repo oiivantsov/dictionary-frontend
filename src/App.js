@@ -5,7 +5,7 @@ import AddWordForm from './pages/AddWordForm';
 import RepeatWords from './pages/RepeatWords';
 import StatisticsPage from './pages/StatisticsPage';
 import FilterWordsPage from './pages/FilterWordsPage';
-import Navbar from './components/NavBar';
+import Navbar from './components/general/NavBar';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './App.css';
 

@@ -2,6 +2,8 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import dayjs from 'dayjs';
 
+import EditWord from '../components/general/EditWord';
+
 const FilterWordsPage = () => {
   const [filters, setFilters] = useState({
     daysSinceLastRepeat: '',
@@ -50,21 +52,6 @@ const FilterWordsPage = () => {
   const handleEditWord = (word) => {
     console.log(word)
     setSelectedWord(word);
-  };
-
-  const handleSaveWord = async () => {
-    try {
-      await axios.put(`/api/words/${selectedWord.id}`, selectedWord);
-      alert('Слово успешно сохранено!');
-      setSelectedWord(null);
-      fetchFilteredWords();
-    } catch (error) {
-      console.error('Ошибка при сохранении слова:', error);
-    }
-  };
-
-  const handleBackToList = () => {
-    setSelectedWord(null);
   };
 
   return (
@@ -212,148 +199,10 @@ const FilterWordsPage = () => {
           )}
         </div>
       ) : (
-        <div className="card mt-5 position-relative">
-          <button className="btn btn-secondary back-top-right" onClick={handleBackToList}>
-            Назад
-          </button>
-          <h2>Редактировать слово</h2>
-          <div className="form-group">
-            <label>Финское слово:</label>
-            <input
-              type="text"
-              className="form-control"
-              value={selectedWord.word}
-              onChange={(e) => setSelectedWord({ ...selectedWord, word: e.target.value })}
-            />
-          </div>
-          <div className="form-group">
-            <label>Перевод:</label>
-            <textarea
-              className="form-control"
-              value={selectedWord.translation}
-              onChange={(e) => setSelectedWord({ ...selectedWord, translation: e.target.value })}
-            />
-          </div>
-          <div className="form-group">
-            <label>Категория:</label>
-            <input
-              type="text"
-              className="form-control"
-              value={selectedWord.category}
-              onChange={(e) => setSelectedWord({ ...selectedWord, category: e.target.value })}
-            />
-          </div>
-          <div className="form-group">
-            <label>Категория 2:</label>
-            <input
-              type="text"
-              className="form-control"
-              value={selectedWord.category2}
-              onChange={(e) => setSelectedWord({ ...selectedWord, category2: e.target.value })}
-            />
-          </div>
-          <div className="form-group">
-            <label>Источник:</label>
-            <input
-              type="text"
-              className="form-control"
-              value={selectedWord.source}
-              onChange={(e) => setSelectedWord({ ...selectedWord, source: e.target.value })}
-            />
-          </div>
-          <div className="form-group">
-            <label>Уровень:</label>
-            <input
-              type="number"
-              className="form-control"
-              value={selectedWord.level}
-              onChange={(e) => setSelectedWord({ ...selectedWord, level: e.target.value })}
-            />
-          </div>
-          <div className="form-group">
-            <label>Популярность:</label>
-            <input
-              type="number"
-              className="form-control"
-              value={selectedWord.popularity}
-              onChange={(e) => setSelectedWord({ ...selectedWord, popularity: e.target.value })}
-            />
-          </div>
-          <div className="form-group">
-            <label>Вернуть на повторение:</label>
-            <input
-              type="number"
-              className="form-control"
-              value={selectedWord.repeat_again}
-              onChange={(e) => setSelectedWord({ ...selectedWord, repeat_again: e.target.value })}
-            />
-          </div>
-          <div className="form-group">
-            <label>Комментарий:</label>
-            <textarea
-              className="form-control"
-              value={selectedWord.comment}
-              onChange={(e) => setSelectedWord({ ...selectedWord, comment: e.target.value })}
-            />
-          </div>
-          <div className="form-group">
-            <label>Примеры:</label>
-            <textarea
-              className="form-control"
-              value={selectedWord.example}
-              onChange={(e) => setSelectedWord({ ...selectedWord, example: e.target.value })}
-            />
-          </div>
-          <div className="form-group">
-            <label>Синонимы:</label>
-            <textarea
-              className="form-control"
-              value={selectedWord.synonyms}
-              onChange={(e) => setSelectedWord({ ...selectedWord, synonyms: e.target.value })}
-            />
-          </div>
-          <div className="form-group">
-            <label>Словообразование:</label>
-            <textarea
-              className="form-control"
-              value={selectedWord.word_formation}
-              onChange={(e) => setSelectedWord({ ...selectedWord, word_formation: e.target.value })}
-            />
-          </div>
-          <div className="form-group">
-            <label>Частота:</label>
-            <input
-              type="number"
-              className="form-control"
-              value={selectedWord.frequency}
-              onChange={(e) => setSelectedWord({ ...selectedWord, frequency: e.target.value })}
-            />
-          </div>
-          <div className="form-group">
-            <label>Дата добавления:</label>
-            <input
-              type="date"
-              className="form-control"
-              value={selectedWord.date_added}
-              onChange={(e) => setSelectedWord({ ...selectedWord, date_added: e.target.value })}
-            />
-          </div>
-          <div className="form-group">
-            <label>Дата последнего повторения:</label>
-            <input
-              type="date"
-              className="form-control"
-              value={selectedWord.date_repeated}
-              onChange={(e) => setSelectedWord({ ...selectedWord, date_repeated: e.target.value })}
-            />
-          </div>
-          <button className="btn btn-success mt-3" onClick={handleSaveWord}>
-            Сохранить изменения
-          </button>
-          <button className="btn btn-secondary mt-3" onClick={handleBackToList}>
-            Назад
-          </button>
-        </div>
+        <EditWord
+          selectedWord={selectedWord}
+          setSelectedWord={setSelectedWord}
+        />
       )}
 
       {/* Выбор даты повторения */}

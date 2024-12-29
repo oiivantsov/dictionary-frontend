@@ -5,7 +5,7 @@ import dayjs from 'dayjs';
 import Slider from 'react-slick'; // For carousel view
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
-import EditWord from '../components/repeat/EditWord';
+import EditWord from '../components/general/EditWord';
 import SearchDialog from '../components/repeat/SearchDialog';
 import DaysDialog from '../components/repeat/DaysDialog';
 import FloatingSearchButton from '../components/repeat/FloatingSearchButton';
@@ -105,11 +105,6 @@ const RepeatWords = () => {
       ...word,
       showTranslation: !globalShowTranslation
     })));
-  };
-
-  //back to list
-  const handleBackToList = () => {
-    setSelectedWord(null);
   };
 
   // next level
@@ -437,7 +432,6 @@ const RepeatWords = () => {
         <EditWord
           selectedWord={selectedWord}
           setSelectedWord={setSelectedWord}
-          handleBackToList={handleBackToList}
         />
       )}
 

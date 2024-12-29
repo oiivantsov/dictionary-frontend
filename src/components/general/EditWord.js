@@ -1,26 +1,32 @@
 import React from "react";
 import dayjs from "dayjs";
+import axios from "axios";
+import { useState } from "react";
 
-import { fetchWordData } from '../utils/apiUtils';
-
-
-const [successMessage, setSuccessMessage] = useState('-');
-
-const handleSaveWord = async () => {
-    try {
-        await axios.put(`/api/words/${selectedWord.id}`, selectedWord);
-        alert('Слово успешно сохранено!');
-        handleBackToList();
-    } catch (error) {
-        console.error('Ошибка при сохранении слова:', error);
-    }
-};
+import { fetchWordData } from '../../utils/apiUtils';
 
 const EditWord = ({
     selectedWord,
     setSelectedWord,
-    handleBackToList,
 }) => {
+
+    const [successMessage, setSuccessMessage] = useState('-');
+
+    //back to list
+    const handleBackToList = () => {
+        setSelectedWord(null);
+    };
+
+    // save word to database
+    const handleSaveWord = async () => {
+        try {
+            await axios.put(`/api/words/${selectedWord.id}`, selectedWord);
+            alert('Слово успешно сохранено!');
+            handleBackToList();
+        } catch (error) {
+            console.error('Ошибка при сохранении слова:', error);
+        }
+    };
 
     if (!selectedWord) return null;
 
