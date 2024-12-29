@@ -31,6 +31,7 @@ const RepeatWords = () => {
   const [loading, setLoading] = useState(true);
   const [loadingLevelUp, setLoadingLevelUp] = useState(false);
 
+  // Fetch words on page load and when level changes
   useEffect(() => {
     const fetchWords = async () => {
       try {
@@ -90,12 +91,14 @@ const RepeatWords = () => {
     }
   };
 
+  // Toggle word visibility
   const toggleWordVisibility = (id) => {
     setWords(words.map((word) =>
       word.id === id ? { ...word, showTranslation: !word.showTranslation, textType: 'word' } : word
     ));
   };
 
+  // Toggle all words visibility
   const toggleAllWordsVisibility = () => {
     setGlobalShowTranslation(!globalShowTranslation);
     setWords(words.map((word) => ({
@@ -130,6 +133,7 @@ const RepeatWords = () => {
     }
   };
 
+  // Custom arrow for carousel
   const CustomArrow = ({ className, style, onClick }) => (
     <div
       className={className}
@@ -147,7 +151,7 @@ const RepeatWords = () => {
     />
   );
 
-
+  // Carousel settings
   const settings = {
     dots: false,
     infinite: true,
