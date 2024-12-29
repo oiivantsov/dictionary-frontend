@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import axios from 'axios';
-import { fetchWordData } from '../apiUtils';
+import { fetchWordData } from '../utils/apiUtils';
 
 const AddWordForm = () => {
   const [word, setWord] = useState('');
