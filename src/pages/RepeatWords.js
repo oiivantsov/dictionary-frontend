@@ -5,9 +5,9 @@ import { fetchWordData } from '../apiUtils';
 import Slider from 'react-slick'; // For carousel view
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
-import SearchDialog from './SearchDialog';
-import DaysDialog from './DaysDialog';
-import FloatingSearchButton from './FloatingSearchButton';
+import SearchDialog from '../components/repeat/SearchDialog';
+import DaysDialog from '../components/repeat/DaysDialog';
+import FloatingSearchButton from '../components/repeat/FloatingSearchButton';
 import { InfinitySpin } from 'react-loader-spinner';
 
 

@@ -1,10 +1,10 @@
 import React, { useState } from 'react';
 import { BrowserRouter as Router, Route, Routes, Link } from 'react-router-dom';
-import SearchWords from './components/SearchWords';
-import AddWordForm from './components/AddWordForm';
-import RepeatWords from './components/RepeatWords';
-import StatisticsPage from './components/StatisticsPage';
-import FilterWordsPage from './components/FilterWordsPage';
+import SearchWords from './pages/SearchWords';
+import AddWordForm from './pages/AddWordForm';
+import RepeatWords from './pages/RepeatWords';
+import StatisticsPage from './pages/StatisticsPage';
+import FilterWordsPage from './pages/FilterWordsPage';
 import Navbar from './components/NavBar';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './App.css';

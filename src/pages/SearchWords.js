@@ -4,8 +4,8 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import { use } from "react";
 import { ClipLoader } from "react-spinners";
 
-axios.defaults.baseURL = 'https://dict-backend.onrender.com';
-// axios.defaults.baseURL = 'http://localhost:8000'; 
+//axios.defaults.baseURL = 'https://dict-backend.onrender.com';
+ axios.defaults.baseURL = 'http://localhost:8000'; 
 
 const SearchWords = () => {
   const [searchTerm, setSearchTerm] = useState("");
