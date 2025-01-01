@@ -46,7 +46,7 @@ const FilterWordsPage = () => {
       const ids = selectedWords.map((word) => word.id);
       const payload = {
         ids,
-        level: 1, // Set your desired level
+        level: newLevel, // Set your desired level
         date_repeated: selectedRepeatDate,
       };
 
@@ -115,7 +115,7 @@ const FilterWordsPage = () => {
             />
           </div>
           <div className="form-group mt-3">
-            <label className='mb-1'>Новый уровень:</label>
+            <label className='mb-1' style={{ marginRight: '10px' }}>Новый уровень:</label>
             <select
               value={newLevel}
               onChange={(e) => setNewLevel(parseInt(e.target.value, 10))}
