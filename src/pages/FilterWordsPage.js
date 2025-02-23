@@ -1,10 +1,50 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import axios from 'axios';
 import dayjs from 'dayjs';
 
 import EditWord from '../components/general/EditWord';
 import Filters from '../components/filter/Filters';
 import WordsList from '../components/filter/WordsList';
+import { LanguageContext } from '../context/LanguageContext';
+
+const translations = {
+  fi: {
+    filter: "Suodatin",
+    wordsFound: "Löydettyjä sanoja",
+    newDate: "Uusi päivämäärä",
+    newLevel: "Uusi taso",
+    updateLevel: "Päivitä taso",
+    updateLevelCount: (count) => `Päivitä taso (${count})`,
+    scrollTop: "Takaisin ylös",
+    errorLoadingWords: "Virhe sanojen lataamisessa",
+    errorUpdatingWords: "Virhe päivitettäessä valittuja sanoja",
+    editWord: "Muokkaa sanaa",
+  },
+  ru: {
+    filter: "Фильтр",
+    wordsFound: "Найдено слов",
+    newDate: "Новая дата",
+    newLevel: "Новый уровень",
+    updateLevel: "Обновить уровень",
+    updateLevelCount: (count) => `Обновить уровень (${count})`,
+    scrollTop: "Наверх",
+    errorLoadingWords: "Ошибка при загрузке слов",
+    errorUpdatingWords: "Ошибка при обновлении выбранных слов",
+    editWord: "Редактировать слово",
+  },
+  en: {
+    filter: "Filter",
+    wordsFound: "Words found",
+    newDate: "New date",
+    newLevel: "New level",
+    updateLevel: "Update level",
+    updateLevelCount: (count) => `Update level (${count})`,
+    scrollTop: "Scroll to top",
+    errorLoadingWords: "Error loading words",
+    errorUpdatingWords: "Error updating selected words",
+    editWord: "Edit word",
+  },
+};
 
 const FilterWordsPage = () => {
 
@@ -14,6 +54,8 @@ const FilterWordsPage = () => {
   const [selectedRepeatDate, setSelectedRepeatDate] = useState(new Date().toISOString().split('T')[0]); // Дефолтная сегодняшняя дата
   const [showTopButton, setShowTopButton] = useState(false);
   const [selectedWords, setSelectedWords] = useState([]); // Track selected words to update their level
+  const { language } = useContext(LanguageContext);
+  const t = translations[language] || translations.fi;
 
   const [filters, setFilters] = useState({
     daysSinceLastRepeat: '',
@@ -37,7 +79,7 @@ const FilterWordsPage = () => {
       });
       setWords(response.data);
     } catch (error) {
-      console.error('Ошибка при загрузке слов:', error);
+      console.error(t.errorLoadingWords, error);
     }
   };
 
@@ -57,7 +99,7 @@ const FilterWordsPage = () => {
       fetchFilteredWords(); // Refresh the list after update
       setSelectedWords([]); // Clear selected words
     } catch (error) {
-      console.error('Ошибка при обновлении выбранных слов:', error);
+      console.error(t.errorUpdatingWords, error);
     }
   };
 
@@ -89,7 +131,7 @@ const FilterWordsPage = () => {
 
   return (
     <div className="container mt-5">
-      <h2>Фильтр</h2>
+      <h2>{t.filter}</h2>
 
       <Filters
         fetchFilteredWords={fetchFilteredWords}
@@ -97,16 +139,14 @@ const FilterWordsPage = () => {
         setFilters={setFilters}
       />
 
-      {/* Количество найденных слов */}
       <div className="mb-3">
-        <h4>Найдено слов: {words.length}</h4>
+        <h4>{t.wordsFound}: {words.length}</h4>
       </div>
 
       {selectedWords.length > 0 && (
         <>
-          {/* Выбор даты повторения */}
           <div className="form-group mt-3">
-            <label className='mb-1'>Новая дата</label>
+            <label className='mb-1'>{t.newDate}</label>
             <input
               type="date"
               className="form-control"
@@ -115,7 +155,7 @@ const FilterWordsPage = () => {
             />
           </div>
           <div className="form-group mt-3">
-            <label className='mb-1' style={{ marginRight: '10px' }}>Новый уровень:</label>
+            <label className='mb-1' style={{ marginRight: '10px' }}>{t.newLevel}:</label>
             <select
               value={newLevel}
               onChange={(e) => setNewLevel(parseInt(e.target.value, 10))}
@@ -135,14 +175,13 @@ const FilterWordsPage = () => {
             className="btn btn-warning mb-3 mt-3"
             onClick={handleUpdateSelectedWords}
           >
-            Обновить уровень ({selectedWords.length})
+            {t.updateLevel} ({selectedWords.length})
           </button>
         </>
       )
       }
 
 
-      {/* Список слов */}
       {
         !selectedWord ? (
 
@@ -162,8 +201,6 @@ const FilterWordsPage = () => {
       }
 
 
-
-      {/* Return to Top Button */}
       {
         showTopButton && (
           <button
@@ -176,7 +213,7 @@ const FilterWordsPage = () => {
               zIndex: 1000
             }}
           >
-            Наверх
+            {t.scrollTop}
           </button>
         )
       }

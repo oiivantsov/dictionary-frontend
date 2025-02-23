@@ -1,7 +1,26 @@
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
+import { LanguageContext } from '../../context/LanguageContext';
+
+const translations = {
+  fi: {
+    days: 'Päivät',
+    apply: 'Hyväksy',
+  },
+  ru: {
+    days: 'Дни',
+    apply: 'Применить',
+  },
+  en: {
+    days: 'Days',
+    apply: 'Apply',
+  },
+};
 
 const DaysDialog = ({ isOpen, onClose, onApply }) => {
   const [inputDays, setInputDays] = useState('');
+  const { language } = useContext(LanguageContext);
+  const t = translations[language] || translations.fi;
+
 
   if (!isOpen) return null;
 
@@ -11,7 +30,7 @@ const DaysDialog = ({ isOpen, onClose, onApply }) => {
         <button className="close-button" onClick={onClose}>
           ×
         </button>
-        <h4>Дни</h4>
+        <h4>{t.days}</h4>
         <input
           type="number"
           value={inputDays}
@@ -28,7 +47,7 @@ const DaysDialog = ({ isOpen, onClose, onApply }) => {
           }}
           disabled={!inputDays} // Disable button if no input
         >
-          Применить
+          {t.apply}
         </button>
       </div>
     </div>

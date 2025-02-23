@@ -1,13 +1,109 @@
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
 import axios from 'axios';
 import { fetchWordData } from '../utils/apiUtils';
+import { LanguageContext } from '../context/LanguageContext';
+
+const translations = {
+  fi: {
+    wordFoundMessage: "Sana löytyi!",
+    successMessage: "Sana lisätty onnistuneesti!",
+    notFountMessage: "Sanaa ei löytynyt sanakirjasta!",
+    updateMessage: "Sana päivitetty onnistuneesti!",
+    checkError: "Virhe sanan tarkistuksessa!",
+    alreadyExistsMessage: "Sana on jo olemassa sanakirjassa!",
+    addWord: "Lisää uusi sana",
+    editWord: "Muokkaa sanaa",
+    enterWord: "Syötä suomen sana",
+    checkWord: "Tarkista sanakirjasta",
+    clearFields: "Tyhjennä kaikki kentät",
+    searchEngWiki: "Hae engl. Wiki",
+    searchFiWiki: "Hae suom. Wiki",
+    searchSlang: "Hae slangi",
+    saveWord: "Tallenna sana",
+    updateWord: "Päivitä sana",
+    translation: "Käännös",
+    category: "Kategoria",
+    secondCategory: "Toinen kategoria",
+    level: "Taso",
+    popularity: "Suosio",
+    dateAdded: "Lisäyspäivämäärä",
+    comment: "Kommentti",
+    examples: "Esimerkit",
+    source: "Lähde",
+    forReview: "Toistettavaksi",
+    synonyms: "Synonyymit",
+    wordFormation: "Sanamuodostus",
+  },
+  ru: {
+    wordFoundMessage: "Слово найдено!",
+    successMessage: "Слово успешно добавлено!",
+    notFountMessage: "Слова нет в словаре!",
+    updateMessage: "Слово успешно обновлено!",
+    checkError: "Ошибка при проверке слова!",
+    alreadyExistsMessage: "Слово уже существует в словаре!",
+    saveError: "Ошибка при сохранении слова!",
+    addWord: "Добавить новое слово",
+    editWord: "Редактировать слово",
+    enterWord: "Введите финское слово",
+    checkWord: "Проверить наличие в словаре",
+    clearFields: "Очистить все поля",
+    searchEngWiki: "Поиск англ. Wiki",
+    searchFiWiki: "Поиск фин. Wiki",
+    searchSlang: "Поиск сленг",
+    saveWord: "Добавить слово",
+    updateWord: "Изменить слово",
+    translation: "Перевод",
+    category: "Категория",
+    secondCategory: "Вторая категория",
+    level: "Уровень",
+    popularity: "Популярность",
+    dateAdded: "Дата добавления",
+    comment: "Комментарий",
+    examples: "Примеры",
+    source: "Источник",
+    forReview: "На повторение",
+    synonyms: "Синонимы",
+    wordFormation: "Словообразование",
+  },
+  en: {
+    wordFoundMessage: "Word found!",
+    successMessage: "Word successfully added!",
+    notFountMessage: "Word not found in the dictionary!",
+    updateMessage: "Word successfully updated!",
+    addSuccessMessage: "Word successfully added!",
+    checkError: "Error checking the word!",
+    alreadyExistsMessage: "Word already exists in the dictionary!",
+    addWord: "Add New Word",
+    editWord: "Edit Word",
+    enterWord: "Enter Finnish Word",
+    checkWord: "Check in Dictionary",
+    clearFields: "Clear All Fields",
+    searchEngWiki: "Search Eng. Wiki",
+    searchFiWiki: "Search Fin. Wiki",
+    searchSlang: "Search Slang",
+    saveWord: "Save Word",
+    updateWord: "Update Word",
+    translation: "Translation",
+    category: "Category",
+    secondCategory: "Second Category",
+    level: "Level",
+    popularity: "Popularity",
+    dateAdded: "Date Added",
+    comment: "Comment",
+    examples: "Examples",
+    source: "Source",
+    forReview: "For Review",
+    synonyms: "Synonyms",
+    wordFormation: "Word Formation",
+  }
+};
 
 const AddWordForm = () => {
   const [word, setWord] = useState('');
   const [wordData, setWordData] = useState({
-    date_added: new Date().toISOString().split('T')[0],  // Автоматическая дата
+    date_added: new Date().toISOString().split('T')[0],
     date_repeated: null,
-    level: 0,  // Уровень по умолчанию 0
+    level: 0, 
     translation: null,
     category: null,
     category2: null,
@@ -20,10 +116,11 @@ const AddWordForm = () => {
     word_formation: null,
     frequency: null
   });
-  const [isEditMode, setIsEditMode] = useState(false);  // Режим редактирования
+  const [isEditMode, setIsEditMode] = useState(false);
   const [successMessage, setSuccessMessage] = useState('-');
+  const { language } = useContext(LanguageContext);
+  const t = translations[language] || translations.fi;
 
-  // Очистка всех полей
   const clearFields = () => {
     setWord('');
     setWordData({
@@ -46,9 +143,7 @@ const AddWordForm = () => {
     setIsEditMode(false);
   };
 
-  // Проверка, есть ли слово в базе данных
   const checkIfWordExists = async () => {
-    // clearFields();  // Очищаем все поля перед проверкой
     try {
       const response = await axios.get(`/api/words/is`, {
         params: {
@@ -57,15 +152,15 @@ const AddWordForm = () => {
       });
 
       if (response.data.length > 0) {
-        setSuccessMessage('Слово найдено!');
-        setWordData(response.data[0]);  // Если слово найдено, заполняем данные
-        setIsEditMode(true);  // Включаем режим редактирования
+        setSuccessMessage(t.wordFoundMessage);
+        setWordData(response.data[0]); 
+        setIsEditMode(true);
       } else {
-        setIsEditMode(false);  // Если слово не найдено, это режим добавления
-        setSuccessMessage('Слова нет в словаре!');
+        setIsEditMode(false);
+        setSuccessMessage(t.notFountMessage);
       }
     } catch (error) {
-      console.error('Ошибка при проверке слова:', error);
+      console.error(t.checkError, error);
     }
   };
 
@@ -74,24 +169,24 @@ const AddWordForm = () => {
   };
 
   const handleSaveWord = async () => {
-    const wordDataWithWord = { ...wordData, word }; // Add the word to wordData
+    const wordDataWithWord = { ...wordData, word };
     try {
       if (isEditMode) {
         await axios.put(`/api/words/${wordData.id}`, wordData);
         clearFields();
-        setSuccessMessage('Слово успешно обновлено!');
+        setSuccessMessage(t.updateMessage);
       } else {
         await axios.post('/api/words', wordDataWithWord);
         clearFields();
-        setSuccessMessage('Слово успешно добавлено!');
+        setSuccessMessage(t.successMessage);
       }
 
     } catch (error) {
       if (error.response && error.response.status === 409) {
-        setSuccessMessage('Слово уже существует в словаре!');
+        setSuccessMessage(t.alreadyExistsMessage);
       } else {
-        console.error('Ошибка при сохранении слова:', error);
-        setSuccessMessage('Произошла ошибка при сохранении слова.');
+        console.error(t.saveError, error);
+        setSuccessMessage(t.saveError);
       }
     }
   };
@@ -102,7 +197,7 @@ const AddWordForm = () => {
   return (
     <div className="container mt-5">
       <div className="d-flex justify-content-center mb-2">
-        <h2>{isEditMode ? 'Редактировать слово' : 'Добавить новое слово'}</h2>
+        <h2>{isEditMode ? t.editWord : t.addWord}</h2>
       </div>
       <div className="form-group input-short position-relative">
         <input
@@ -110,7 +205,7 @@ const AddWordForm = () => {
           value={word}
           onChange={(e) => setWord(e.target.value)}
           className="form-control"
-          placeholder="Введите финское слово"
+          placeholder={t.enterWord}
           style={{ paddingRight: '30px' }}
         />
 
@@ -121,14 +216,14 @@ const AddWordForm = () => {
               className="btn btn-warning mx-2" // Added btn-lg for size and mx-2 for spacing
               disabled={isWordEmpty}
             >
-              Проверить наличие в словаре
+              {t.checkWord}
             </button>
 
             <button
               onClick={clearFields}
               className="btn btn-secondary mx-2" // Added btn-lg for size and mx-2 for spacing
             >
-              Очистить все поля
+              {t.clearFields}
             </button>
           </div>
 
@@ -143,21 +238,21 @@ const AddWordForm = () => {
           className="btn btn-info action-button"
           disabled={isWordEmpty}
         >
-          Поиск англ. Wiki
+          {t.searchEngWiki}
         </button>
         <button
           onClick={() => handleFetchWordData('fi')}
           className="btn btn-info action-button"
           disabled={isWordEmpty}
         >
-          Поиск фин. Wiki
+          {t.searchFiWiki}
         </button>
         <button
           onClick={() => handleFetchWordData('slang')}
           className="btn btn-info action-button"
           disabled={isWordEmpty}
         >
-          Поиск сленг
+          {t.searchSlang}
         </button>
       </div>
 
@@ -168,7 +263,7 @@ const AddWordForm = () => {
       <div className="fields-container">
 
         <div className="form-group">
-          <label>Перевод на русский:</label>
+          <label>{t.translation}:</label>
           <textarea
             value={wordData.translation ?? ""}
             onChange={(e) => setWordData({ ...wordData, translation: e.target.value || null })}
@@ -177,7 +272,7 @@ const AddWordForm = () => {
         </div>
 
         <div className="form-group">
-          <label>Категория:</label>
+          <label>{t.category}:</label>
           <input
             type="text"
             value={wordData.category ?? ""}
@@ -187,7 +282,7 @@ const AddWordForm = () => {
         </div>
 
         <div className="form-group">
-          <label>Категория 2:</label> {/* Новое поле */}
+          <label>{t.secondCategory}:</label> {/* Новое поле */}
           <input
             type="text"
             value={wordData.category2 ?? ""}
@@ -199,7 +294,7 @@ const AddWordForm = () => {
 
 
         <div className="form-group">
-          <label>Уровень:</label>
+          <label>{t.level}:</label>
           <input
             type="number"
             value={wordData.level ?? ""}
@@ -212,7 +307,7 @@ const AddWordForm = () => {
         </div>
 
         <div className="form-group">
-          <label>Популярность:</label>
+          <label>{t.popularity}:</label>
           <input
             type="number"
             value={wordData.popularity ?? ""}
@@ -227,7 +322,7 @@ const AddWordForm = () => {
 
 
         <div className="form-group">
-          <label>Дата добавления:</label>
+          <label>{t.dateAdded}:</label>
           <input
             type="date"
             value={wordData.date_added ?? ""}
@@ -237,7 +332,7 @@ const AddWordForm = () => {
         </div>
 
         <div className="form-group">
-          <label>Комментарий:</label>
+          <label>{t.comment}:</label>
           <textarea
             value={wordData.comment ?? ""}
             onChange={(e) => setWordData({ ...wordData, comment: e.target.value || null })}
@@ -247,7 +342,7 @@ const AddWordForm = () => {
         </div>
 
         <div className="form-group">
-          <label>Примеры:</label>
+          <label>{t.examples}:</label>
           <textarea
             value={wordData.example ?? ""}
             onChange={(e) => setWordData({ ...wordData, example: e.target.value || null })}
@@ -260,7 +355,7 @@ const AddWordForm = () => {
 
 
         <div className="form-group">
-          <label>Источник:</label> {/* Новое поле */}
+          <label>{t.source}:</label> {/* Новое поле */}
           <input
             type="text"
             value={wordData.source ?? ""}
@@ -270,7 +365,7 @@ const AddWordForm = () => {
         </div>
 
         <div className="form-group">
-          <label>На повторение:</label> {/* Новое поле */}
+          <label>{t.forReview}:</label> {/* Новое поле */}
           <input
             type="number"
             value={wordData.repeat_again ?? ""}
@@ -283,7 +378,7 @@ const AddWordForm = () => {
         </div>
 
         <div className="form-group">
-          <label>Синонимы:</label>
+          <label>{t.synonyms}:</label>
           <textarea
             value={wordData.synonyms ?? ""}
             onChange={(e) => setWordData({ ...wordData, synonyms: e.target.value || null })}
@@ -292,7 +387,7 @@ const AddWordForm = () => {
         </div>
 
         <div className="form-group">
-          <label>Словообразование:</label>
+          <label>{t.wordFormation}:</label>
           <textarea
             value={wordData.word_formation ?? ""}
             onChange={(e) => setWordData({ ...wordData, word_formation: e.target.value || null })}
@@ -306,7 +401,7 @@ const AddWordForm = () => {
 
       <div className="d-flex justify-content-center mt-2">
         <button className="btn btn-success mt-3" onClick={handleSaveWord} disabled={isWordEmpty}>
-          {isEditMode ? 'Изменить слово' : 'Добавить слово'}
+          {isEditMode ? t.updateWord : t.saveWord}
         </button>
       </div>
 
