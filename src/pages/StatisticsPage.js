@@ -1,9 +1,50 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { ClipLoader } from "react-spinners";
+import { useContext } from 'react';
+import { LanguageContext } from '../context/LanguageContext';
+
+const translations = {
+  fi: {
+    statistics: "Tilastot",
+    totalWords: "Sanakirjan sanat yhteensä",
+    studiedWords: "Opitut sanat",
+    loadingStats: "Tilastojen lataaminen...",
+    daysCount: "Päivien lukumäärä",
+    level: "Taso",
+    noData: "Ei näytettäviä tietoja",
+    error: "Virhe haettaessa tilastoja:",
+    levelShort: "Taso"
+  },
+  ru: {
+    statistics: "Статистика",
+    totalWords: "Всего слов в словаре",
+    studiedWords: "Изучено слов",
+    loadingStats: "Загрузка статистики...",
+    daysCount: "Количество дней",
+    level: "Уровень",
+    noData: "Нет данных для отображения",
+    error: "Ошибка при получении статистики:",
+    levelShort: "Ур."
+  },
+  en: {
+    statistics: "Statistics",
+    totalWords: "Total words in dictionary",
+    studiedWords: "Words studied",
+    loadingStats: "Loading statistics...",
+    daysCount: "Number of days",
+    level: "Level",
+    noData: "No data to display",
+    error: "Error fetching statistics:",
+    levelShort: "Lvl"
+  }
+};
 
 const StatisticsPage = () => {
   const [statistics, setStatistics] = useState(null);
+
+  const { language } = useContext(LanguageContext);
+  const t = translations[language] || translations.fi;
 
   useEffect(() => {
     const fetchStatistics = async () => {
@@ -11,7 +52,7 @@ const StatisticsPage = () => {
         const response = await axios.get('/api/words/stats');
         setStatistics(response.data);
       } catch (error) {
-        console.error('Ошибка при получении статистики:', error);
+        console.error(t.error, error);
       }
     };
 
@@ -22,7 +63,7 @@ const StatisticsPage = () => {
     return (
       <div className="loading-container">
         <ClipLoader size={35} color={"#555"} className="spinner" />
-        <span>Загрузка статистики...</span>
+        <span>{t.loadingStats}</span>
       </div>
     );
   }
@@ -34,15 +75,15 @@ const StatisticsPage = () => {
 
   return (
     <div className="container mt-5">
-      <h2>Cтатистика</h2>
+      <h2></h2>
 
       <div className="statistics-container">
         <div className="statistics-item">
-          <h5>Всего слов в словаре</h5>
+          <h5>{t.totalWords}</h5>
           <p>{statistics.totalWords}</p>
         </div>
         <div className="statistics-item">
-          <h5>Изучено слов</h5>
+          <h5>{t.studiedWords}</h5>
           <p>{statistics.studiedWords}</p>
         </div>
       </div>
@@ -51,10 +92,10 @@ const StatisticsPage = () => {
         <table className="table table-dark-theme">
           <thead>
             <tr>
-              <th>Количество дней</th>
+              <th>{t.daysCount}</th>
               {[...Array(12).keys()].map(level => (
                 <th key={level + 1}>
-                  Ур. {level + 1} <span style={{ fontWeight: 'normal' }}> | {uniqueValues[level]}</span>
+                  {t.levelShort} {level + 1} <span style={{ fontWeight: 'normal' }}> | {uniqueValues[level]}</span>
                 </th>
               ))}
             </tr>
@@ -73,7 +114,7 @@ const StatisticsPage = () => {
               ))
             ) : (
               <tr>
-                <td colSpan="13">Нет данных для отображения</td>
+                <td colSpan="13">{t.noData}</td>
               </tr>
             )}
           </tbody>

@@ -1,3 +1,29 @@
+import React from "react";
+import { LanguageContext } from '../../context/LanguageContext';
+import { useContext } from 'react';
+
+const translations = {
+    fi: {
+        selectAll: "Valitse kaikki",
+        deselectAll: "Poista valinta",
+        editWord: "Muokkaa",
+        noWords: "Ei sanoja näytettäväksi"
+    },
+    ru: {
+        selectAll: "Выбрать все",
+        deselectAll: "Снять выделение",
+        editWord: "Редактировать",
+        noWords: "Нет слов для отображения"
+    },
+    en: {
+        selectAll: "Select all",
+        deselectAll: "Deselect all",
+        editWord: "Edit",
+        noWords: "No words to display"
+    }
+};
+
+
 const WordsList = (
     {
         words,
@@ -6,6 +32,9 @@ const WordsList = (
         handleEditWord
     }
 ) => {
+
+    const { language } = useContext(LanguageContext);
+    const t = translations[language] || translations.fi;
 
     const handleCheckboxChange = (word, checked) => {
         if (checked) {
@@ -33,8 +62,8 @@ const WordsList = (
 
                     <label htmlFor="select-all" className="form-check-label me-2">
                         {selectedWords.length === words.length
-                            ? "Снять выделение"
-                            : "Выбрать все"}
+                            ? t.deselectAll
+                            : t.selectAll}
                     </label>
                     <input
                         className="form-check-input"
@@ -77,7 +106,7 @@ const WordsList = (
                                             className="filter-page-edit-btn btn btn-secondary"
                                             onClick={() => handleEditWord(word)}
                                         >
-                                            Редактировать
+                                            {t.editWord}
                                         </button>
                                     </div>
                                 </div>
@@ -85,7 +114,7 @@ const WordsList = (
                         </div>
                     ))
                 ) : (
-                    <p>Нет слов для отображения</p>
+                    <p>{t.noWords}</p>
                 )}
             </div>
 

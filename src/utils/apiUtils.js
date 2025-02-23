@@ -6,6 +6,7 @@ export const fetchWordData = async (word, source, setWordData, setSuccessMessage
       params: { word }
     });
     const autoFilledData = response.data;
+    console.log(autoFilledData);
 
     setWordData((prevData) => ({
       ...prevData,
@@ -30,22 +31,22 @@ export const fetchWordData = async (word, source, setWordData, setSuccessMessage
     }));
 
     setSuccessMessage(
-      source === 'eng' && autoFilledData.eng_data?.error
-        ? 'Слово не найдено в английской Wiki'
+      source === 'eng' && (!autoFilledData.eng_data?.definitions || autoFilledData.eng_data?.definitions.trim() === '')
+        ? 'Wiktionary 🔍❌'
         : source === 'fi' && autoFilledData.fi_data.definitions === ''
-        ? 'Слово не найдено в финской Wiki'
+        ? 'Wikisanakirja 🔍❌'
         : source === 'slang' && autoFilledData.slang_data.word === 'n/a'
-        ? 'Слово не найдено в сленговом словаре'
+        ? 'UrbaaniSanakirja 🔍❌'
         : source === 'eng'
-        ? 'Данные успешно загружены из английской Wiki'
+        ? 'Wiktionary ✅'
         : source === 'fi'
-        ? 'Данные успешно загружены из финской Wiki'
+        ? 'Wikisanakirja ✅'
         : source === 'slang'
-        ? 'Данные успешно загружены из сленгового словаря'
-        : 'Данные успешно загружены'
+        ? 'UrbaaniSanakirja ✅'
+        : '✅'
     );
   } catch (error) {
-    console.error('Ошибка при загрузке данных:', error);
-    setSuccessMessage('Ошибка при загрузке данных');
+    console.error('⚠️', error);
+    setSuccessMessage('⚠️');
   }
 };

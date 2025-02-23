@@ -1,11 +1,101 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import axios from "axios";
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { use } from "react";
 import { ClipLoader } from "react-spinners";
+import { LanguageContext } from '../context/LanguageContext';
 
-axios.defaults.baseURL = 'https://dict-backend.onrender.com';
-// axios.defaults.baseURL = 'http://localhost:8000'; 
+axios.defaults.baseURL = process.env.REACT_APP_API_BASE_URL || "http://localhost:8000";
+
+const translations = {
+  fi: {
+    title: "Sanakirja",
+    searchBy: "Hae sanalla",
+    searchPlaceholder: "Etsi sanalla tai käännöksellä",
+    searchButton: "Etsi",
+    searchWord: "Suomi",
+    searchTranslation: "Venäjä",
+    statusReady: "Valmis!",
+    statusNotFound: "Sanaa ei löytynyt",
+    statusError: "Tapahtui virhe haussa",
+    backButton: "Takaisin tuloksiin",
+    deleteButton: "Poista sana",
+    deleteConfirm: "Oletko varma, että haluat poistaa sanan?",
+    translation: "Käännös",
+    category: "Kategoria",
+    secondCategory: "Toinen kategoria",
+    source: "Lähde",
+    synonyms: "Synonyymit",
+    examples: "Esimerkit",
+    wordFormation: "Sanamuodostus",
+    comment: "Kommentti",
+    level: "Taso",
+    popularity: "Suosio",
+    forReview: "Toistettavaksi",
+    dateAdded: "Lisäyspäivämäärä",
+    lastReviewDate: "Viimeisin toistopäivä",
+    daysSinceLastReview: "Päiviä viimeisestä toistosta",
+    top10000: "Top 10,000",
+  },
+  ru: {
+    title: "Словарик",
+    searchBy: "Поиск по слову",
+    searchPlaceholder: "Искать по слову или переводу",
+    searchButton: "Поиск",
+    searchWord: "финский",
+    searchTranslation: "русский",
+    statusReady: "Готов к работе!",
+    statusNotFound: "Слово не найдено",
+    statusError: "Произошла ошибка при поиске",
+    backButton: "Назад к результатам",
+    deleteButton: "Удалить слово",
+    deleteConfirm: "Вы уверены, что хотите удалить это слово?",
+    translation: "Перевод",
+    category: "Категория",
+    secondCategory: "Вторая категория",
+    source: "Источник",
+    synonyms: "Синонимы",
+    examples: "Примеры",
+    wordFormation: "Словообразование",
+    comment: "Комментарий",
+    level: "Уровень",
+    popularity: "Популярность",
+    forReview: "На повторение",
+    dateAdded: "Дата добавления",
+    lastReviewDate: "Последняя дата повторения",
+    daysSinceLastReview: "Дни с последнего повторения",
+    top10000: "Топ 10,000",
+  },
+  en: {
+    title: "Dictionary",
+    searchBy: "Search by word",
+    searchPlaceholder: "Search by word or translation",
+    searchButton: "Search",
+    searchWord: "Finnish",
+    searchTranslation: "Russian",
+    statusReady: "Ready!",
+    statusNotFound: "Word not found",
+    statusError: "An error occurred during search",
+    backButton: "Back to results",
+    deleteButton: "Delete word",
+    deleteConfirm: "Are you sure you want to delete this word?",
+    translation: "Translation",
+    category: "Category",
+    secondCategory: "Second Category",
+    source: "Source",
+    synonyms: "Synonyms",
+    examples: "Examples",
+    wordFormation: "Word Formation",
+    comment: "Comment",
+    level: "Level",
+    popularity: "Popularity",
+    forReview: "For Review",
+    dateAdded: "Date Added",
+    lastReviewDate: "Last Review Date",
+    daysSinceLastReview: "Days Since Last Review",
+    top10000: "Top 10,000",
+  },
+};
 
 const SearchWords = () => {
   const [searchTerm, setSearchTerm] = useState("");
@@ -14,6 +104,8 @@ const SearchWords = () => {
   const [selectedWord, setSelectedWord] = useState(null);
   const [statusMessage, setStatusMessage] = useState("-");
   const [loading, setLoading] = useState(false); // Add loading state
+  const { language } = useContext(LanguageContext);
+  const t = translations[language] || translations.fi;
 
   // Add simple search useEffect to start loading data on page load
   useEffect(() => {
@@ -25,41 +117,31 @@ const SearchWords = () => {
             [searchBy]: "mennä", // Example default search term
           },
         });
-        setStatusMessage("Готов к работе!");
+        setStatusMessage(""); // Reset status message
       } catch (error) {
         console.error("Error loading data:", error);
-        setStatusMessage("Какая-то ошибка при загрузке данных");
+        setStatusMessage(t.statusError);
       } finally {
         setLoading(false); // End loading
       }
     };
 
     fetchInitialData();
-  }, []); // Empty dependency array to run once on component mount
+  }, [language]); // Empty dependency array to run once on component mount
 
   const handleSearch = async () => {
     if (!searchTerm.trim()) {
-      alert("Please enter a search term");
+      alert(t.searchPlaceholder);
       return;
     }
     try {
       setLoading(true);
-      const response = await axios.get(`/api/words/search`, {
-        params: {
-          [searchBy]: searchTerm,
-        },
-      });
-      console.log(response);
-      if (response.data.length === 0) {
-        setStatusMessage("Слово не найдено");
-      } else {
-        setStatusMessage(""); // Clear status message if results are found
-      }
+      const response = await axios.get(`/api/words/search`, { params: { [searchBy]: searchTerm } });
       setResults(response.data);
-      setSelectedWord(null); // Clear selected word if a new search is performed
+      setStatusMessage(response.data.length === 0 ? t.statusNotFound : "");
+      setSelectedWord(null);
     } catch (error) {
-      console.error("Error fetching data:", error);
-      setStatusMessage("Произошла ошибка при поиске");
+      setStatusMessage(t.statusError);
     } finally {
       setLoading(false);
     }
@@ -76,21 +158,21 @@ const SearchWords = () => {
   };
 
   const handleDelete = async () => {
-    if (window.confirm("Вы уверены, что хотите удалить это слово?")) {
+    if (window.confirm(t.deleteConfirm)) {
       try {
         await axios.delete(`/api/words/${selectedWord.id}`);
-        alert("Слово успешно удалено!");
-        setSelectedWord(null); // Return to search results view
-        handleSearch(); // Refresh search results after deletion
+        alert(t.deleteButton);
+        setSelectedWord(null);
+        handleSearch();
       } catch (error) {
-        console.error("Ошибка при удалении слова:", error);
+        console.error(t.statusError, error);
       }
     }
   };
 
   return (
     <div className="container mt-5">
-      <h1 className="text-center mb-4">Словарик</h1>
+      <h1 className="text-center mb-4">{t.title}</h1>
 
       {/* Search Section */}
       <div className="row justify-content-center mb-4">
@@ -99,7 +181,7 @@ const SearchWords = () => {
             <input
               type="text"
               className="form-control input-short"
-              placeholder={`Search by ${searchBy}`}
+              placeholder={t.searchPlaceholder}
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
             />
@@ -109,8 +191,8 @@ const SearchWords = () => {
               onChange={(e) => setSearchBy(e.target.value)}
               style={{ maxWidth: "150px" }}
             >
-              <option value="word">финский</option>
-              <option value="translation">русский</option>
+              <option value="word">{t.searchWord}</option>
+              <option value="translation">{t.searchTranslation}</option>
             </select>
           </div>
 
@@ -123,7 +205,7 @@ const SearchWords = () => {
 
           <div className="form-group text-center mt-3">
             <button className="btn btn-primary w-50" onClick={handleSearch}>
-              Поиск
+              {t.searchButton}
             </button>
           </div>
           )}
@@ -137,27 +219,27 @@ const SearchWords = () => {
       {selectedWord ? (
         <div className="card p-3">
           <h2 className="card-title">{selectedWord.word}</h2>
-          <p><strong>Перевод:</strong> {selectedWord.translation}</p>
-          <p><strong>Категория:</strong> {selectedWord.category}</p>
-          <p><strong>Вторая категория:</strong> {selectedWord.category2}</p>
-          <p><strong>Источник:</strong> {selectedWord.source}</p>
-          <p><strong>Синонимы:</strong> {selectedWord.synonyms}</p>
-          <p><strong>Примеры:</strong> {selectedWord.example}</p>
-          <p><strong>Словообразование:</strong> {selectedWord.word_formation}</p>
-          <p><strong>Комментарий:</strong> {selectedWord.comment}</p>
-          <p><strong>Уровень:</strong> {selectedWord.level}</p>
-          <p><strong>Популярность:</strong> {selectedWord.popularity}</p>
-          <p><strong>На повторение:</strong> {selectedWord.repeat_again}</p>
-          <p><strong>Дата добавления:</strong> {selectedWord.date_added}</p>
-          <p><strong>Последняя дата повторения:</strong> {selectedWord.date_repeated}</p>
-          <p><strong>Дни с последнего повторения:</strong> {selectedWord.days_since_last_repeat}</p>
-          <p><strong>Топ 10,000:</strong> {selectedWord.frequency}</p>
+          <p><strong>{t.translation}:</strong> {selectedWord.translation}</p>
+          <p><strong>{t.category}:</strong> {selectedWord.category}</p>
+          <p><strong>{t.secondCategory}:</strong> {selectedWord.category2}</p>
+          <p><strong>{t.source}:</strong> {selectedWord.source}</p>
+          <p><strong>{t.synonyms}:</strong> {selectedWord.synonyms}</p>
+          <p><strong>{t.examples}:</strong> {selectedWord.example}</p>
+          <p><strong>{t.wordFormation}:</strong> {selectedWord.word_formation}</p>
+          <p><strong>{t.comment}:</strong> {selectedWord.comment}</p>
+          <p><strong>{t.level}:</strong> {selectedWord.level}</p>
+          <p><strong>{t.popularity}:</strong> {selectedWord.popularity}</p>
+          <p><strong>{t.forReview}:</strong> {selectedWord.repeat_again}</p>
+          <p><strong>{t.dateAdded}:</strong> {selectedWord.date_added}</p>
+          <p><strong>{t.lastReviewDate}:</strong> {selectedWord.date_repeated}</p>
+          <p><strong>{t.daysSinceLastReview}:</strong> {selectedWord.days_since_last_repeat}</p>
+          <p><strong>{t.top10000}:</strong> {selectedWord.frequency}</p>
           <div className="d-flex justify-content-between mt-3">
             <button className="btn btn-secondary" onClick={handleBack}>
-              Назад к результатам
+              {t.backButton}
             </button>
             <button className="btn btn-danger" onClick={handleDelete}>
-              Удалить слово
+              {t.deleteButton}
             </button>
           </div>
         </div>
@@ -177,7 +259,7 @@ const SearchWords = () => {
               ))}
             </div>
           ) : (
-            <p className="text-center">{statusMessage || "status message"}</p>
+            <p className="text-center">{statusMessage}</p>
           )}
         </div>
       )}

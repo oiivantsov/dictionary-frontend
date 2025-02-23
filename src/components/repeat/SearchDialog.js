@@ -1,15 +1,54 @@
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
+import { LanguageContext } from '../../context/LanguageContext';
 import axios from 'axios';
+
+const translations = {
+    fi: {
+        search: 'Hae',
+        word: 'Sana...',
+        translation: 'Käännös',
+        searchResults: 'Hakutulokset',
+        loading: 'Ladataan',
+        alertMessage: 'Anna hakusana',
+        errorMessage: 'Virhe haettaessa hakutuloksia',
+        finLan: 'Suomi',
+        rusLang: 'Venäjä',
+    },
+    ru: {
+        search: 'Поиск',
+        word: 'Слово...',
+        translation: 'Перевод',
+        searchResults: 'Результаты поиска',
+        loading: 'Загрузка',
+        alertMessage: 'Введите слово для поиска',
+        errorMessage: 'Ошибка при получении результатов поиска',
+        finLan: 'Финский',
+        rusLang: 'Русский',
+    },
+    en: {
+        search: 'Search',
+        word: 'Word...',
+        translation: 'Translation',
+        searchResults: 'Search Results',
+        loading: 'Loading',
+        alertMessage: 'Please enter a search term',
+        errorMessage: 'Error fetching search results',
+        finLan: 'Finnish',
+        rusLang: 'Russian',
+    },
+};
 
 const SearchDialog = ({ onClose }) => {
     const [searchTerm, setSearchTerm] = useState('');
     const [searchBy, setSearchBy] = useState('word');
     const [results, setResults] = useState([]);
     const [loading, setLoading] = useState(false);
+    const { language } = useContext(LanguageContext);
+    const t = translations[language] || translations.fi;
 
     const handleSearch = async () => {
         if (!searchTerm.trim()) {
-            alert('Please enter a search term');
+            alert(t.alertMessage);
             return;
         }
         try {
@@ -21,7 +60,7 @@ const SearchDialog = ({ onClose }) => {
             });
             setResults(response.data);
         } catch (error) {
-            console.error('Error fetching search results:', error);
+            console.error(t.errorMessage, error);
         } finally {
             setLoading(false);
         }
@@ -37,7 +76,7 @@ const SearchDialog = ({ onClose }) => {
                     <input
                         type="text"
                         className="form-control"
-                        placeholder={`Слово...`}
+                        placeholder={t.word}
                         value={searchTerm}
                         onChange={(e) => setSearchTerm(e.target.value)}
                     />
@@ -46,13 +85,13 @@ const SearchDialog = ({ onClose }) => {
                         value={searchBy}
                         onChange={(e) => setSearchBy(e.target.value)}
                     >
-                        <option value="word">Финский</option>
-                        <option value="translation">Русский</option>
+                        <option value="word">{t.finLan}</option>
+                        <option value="translation">{t.rusLang}</option>
                     </select>
                 </div>
 
                 {loading ? (
-                    <div className="loading-indicator">Загрузка...</div>
+                    <div className="loading-indicator">{t.loading}...</div>
                 ) : (
                     <ul className="results-list">
                         {results.map((result) => (
@@ -64,7 +103,7 @@ const SearchDialog = ({ onClose }) => {
                 )}
 
                 <button className="btn btn-primary w-50 mt-4" onClick={handleSearch}>
-                    Поиск
+                    {t.search}
                 </button>
             </div>
         </div>

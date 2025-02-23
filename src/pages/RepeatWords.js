@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import axios from 'axios';
 import dayjs from 'dayjs';
 
@@ -10,12 +10,92 @@ import SearchDialog from '../components/repeat/SearchDialog';
 import DaysDialog from '../components/repeat/DaysDialog';
 import FloatingSearchButton from '../components/repeat/FloatingSearchButton';
 import { InfinitySpin } from 'react-loader-spinner';
+import { LanguageContext } from '../context/LanguageContext';
+
+const translations = {
+  fi: {
+    level: "Taso",
+    wordsCount: "Sanat",
+    days: "Päiviä",
+    showWords: "Näytä sanat",
+    showTranslations: "Näytä käännökset",
+    switchToList: "Luettelo",
+    switchToCarousel: "Karuselli",
+    noWords: "Ei sanoja näytettäväksi",
+    comment: "Kommentti",
+    examples: "Esimerkit",
+    nextLevel: "Seuraava taso!",
+    errorLoadingWords: "Virhe sanojen lataamisessa",
+    errorUpdatingLevel: "Virhe päivitettäessä tasoa",
+    levelUpSuccess: "Sanat siirrettiin seuraavalle tasolle!",
+    date: "Päivämäärä",
+    details: "Tiedot",
+    word: "Sana",
+    translation: "Käännös",
+    noWords: "Ei sanoja näytettäväksi",
+    noComments: "Ei kommentteja",
+    noExamples: "Ei esimerkkejä",
+    loading: "Ladataan",
+    levelUp: "Päivitä taso!",
+  },
+  ru: {
+    level: "Уровень",
+    wordsCount: "Слов",
+    days: "Дней",
+    showWords: "Показать слова",
+    showTranslations: "Показать переводы",
+    switchToList: "Список",
+    switchToCarousel: "Карусель",
+    noWords: "Нет слов для отображения",
+    comment: "Коммент",
+    examples: "Примеры",
+    nextLevel: "Следующий уровень!",
+    errorLoadingWords: "Ошибка при загрузке слов",
+    errorUpdatingLevel: "Ошибка при обновлении уровня",
+    levelUpSuccess: "Слова перенесены на следующий уровень!",
+    date: "Дата",
+    details: "Детали",
+    word: "Слово",
+    translation: "Перевод",
+    noWords: "Нет слов для отображения",
+    noComments: "Нет комментариев",
+    noExamples: "Нет примеров",
+    loading: "Загрузка",
+    levelUp: "Повысить уровень!",
+  },
+  en: {
+    level: "Level",
+    wordsCount: "Words",
+    days: "Days",
+    showWords: "Show words",
+    showTranslations: "Show translations",
+    switchToList: "List",
+    switchToCarousel: "Carousel",
+    noWords: "No words to display",
+    comment: "Comment",
+    examples: "Examples",
+    nextLevel: "Next level!",
+    errorLoadingWords: "Error loading words",
+    errorUpdatingLevel: "Error updating level",
+    levelUpSuccess: "Words have been moved to the next level!",
+    date: "Date",
+    details: "Details",
+    word: "Word",
+    translation: "Translation",
+    noWords: "No words to display",
+    noComments: "No comments",
+    noExamples: "No examples",
+    loading: "Loading",
+    levelUp: "Level up!",
+  }
+};
+
 
 
 const RepeatWords = () => {
   const [level, setLevel] = useState(1);
   const [words, setWords] = useState([]);
-  const [selectedWord, setSelectedWord] = useState(null); // Выбранное слово для редактирования
+  const [selectedWord, setSelectedWord] = useState(null);
   const [daysSinceLastRepeat, setDaysSinceLastRepeat] = useState(0); // Days since last repeat
   const [levelDays, setLevelDays] = useState([]); // Days for each level  
   const [customDate, setCustomDate] = useState(dayjs().format('YYYY-MM-DD'));
@@ -30,6 +110,9 @@ const RepeatWords = () => {
   const [refreshKey, setRefreshKey] = useState(0); // just to refresh the page
   const [loading, setLoading] = useState(true);
   const [loadingLevelUp, setLoadingLevelUp] = useState(false);
+
+  const { language } = useContext(LanguageContext);
+  const t = translations[language] || translations.fi;
 
   // Fetch words on page load and when level changes
   useEffect(() => {
@@ -58,7 +141,7 @@ const RepeatWords = () => {
         setDaysSinceLastRepeat(wordsWithToggle.length > 0 ? wordsWithToggle[0].dayssincelastrepeat : 0);
 
       } catch (error) {
-        console.error('Ошибка при загрузке слов:', error);
+        console.error(t.errorLoadingWords, error);
       }
     };
 
@@ -84,10 +167,10 @@ const RepeatWords = () => {
         setWords(wordsWithToggle);
         setDaysSinceLastRepeat(days);
       } else {
-        alert('Нет слов для отображения');
+        alert(t.noWords);
       }
     } catch (error) {
-      console.error('Ошибка при загрузке слов:', error);
+      console.error(t.errorLoadingWords, error);
     }
   };
 
@@ -118,13 +201,13 @@ const RepeatWords = () => {
       };
       await axios.post(`/api/words/upgrade`, updatedWords);
       setLoadingLevelUp(false);
-      alert('Слова перенесены на следующий уровень!');
+      alert(t.levelUpSuccess);
 
       // Refresh page
       setRefreshKey((prevKey) => prevKey + 1);
 
     } catch (error) {
-      console.error('Ошибка при обновлении уровня:', error);
+      console.error(t.errorUpdatingLevel, error);
     }
   };
 
@@ -178,7 +261,7 @@ const RepeatWords = () => {
       {!selectedWord ? (
         <>
           {/* Info about days and level */}
-          <h2>Уровень {level}</h2>
+          <h2>{t.level} {level}</h2>
           {loading ? (
             <div className="loading-container-small">
               <InfinitySpin width="200" color="#4fa94d" />
@@ -187,11 +270,11 @@ const RepeatWords = () => {
             <>
               <div className="statistics-container">
                 <div className="statistics-item">
-                  <h5>Дней</h5>
+                  <h5>{t.days}</h5>
                   <p>{daysSinceLastRepeat}</p>
                 </div>
                 <div className="statistics-item">
-                  <h5>Слов</h5>
+                  <h5>{t.wordsCount}</h5>
                   <p>{words.length}</p>
                 </div>
               </div>
@@ -209,7 +292,7 @@ const RepeatWords = () => {
                 const days = levelDays[lvl] !== undefined ? levelDays[lvl] : "-";
                 return (
                   <option key={lvl + 1} value={lvl + 1}>
-                    Уровень {lvl + 1} ({days})
+                    {t.level} {lvl + 1} ({days})
                   </option>
                 );
               })}
@@ -236,13 +319,13 @@ const RepeatWords = () => {
           {/* Buttons to set words/translations and carousel/list */}
           <div className="d-flex justify-content-between mb-3">
             <button onClick={toggleAllWordsVisibility} className="btn btn-info">
-              {globalShowTranslation ? 'Показать слова' : 'Показать переводы'}
+              {globalShowTranslation ? t.showWords : t.showTranslations}
             </button>
             <button
               onClick={() => setIsCarouselView(!isCarouselView)}
               className="btn btn-secondary"
             >
-              {isCarouselView ? 'Список' : 'Карусель'}
+              {isCarouselView ? t.switchToList : t.switchToCarousel}
             </button>
           </div>
 
@@ -269,20 +352,20 @@ const RepeatWords = () => {
                             style={{ width: '100px' }} // Фиксированная ширина кнопки
                             onClick={() => toggleWordVisibility(word.id)}
                           >
-                            {word.showTranslation ? 'Слово' : 'Перевод'}
+                            {word.showTranslation ? t.word : t.translation}
                           </button>
                           <button
                             className="btn btn-success word-button"
                             style={{ width: '100px' }} // Фиксированная ширина кнопки
                             onClick={() => setSelectedWord(word)}
                           >
-                            Детали
+                            {t.details}
                           </button>
                         </div>
                       </li>
                     ))
                   ) : (
-                    <li className="list-group-item">Нет слов для отображения</li>
+                    <li className="list-group-item">{t.noWords}</li>
                   )}
                 </ul>
               ) : (
@@ -336,9 +419,9 @@ const RepeatWords = () => {
                             {word.showTranslation
                               ? word.translation
                               : word.textType === 'comment'
-                                ? word.comment || 'Нет комментариев'
+                                ? word.comment || t.noComments
                                 : word.textType === 'example'
-                                  ? word.example || 'Нет примеров'
+                                  ? word.example || t.noExamples
                                   : word.word}
                           </p>
                         </div>
@@ -350,13 +433,13 @@ const RepeatWords = () => {
                             className="btn btn-primary word-button"
                             onClick={() => toggleWordVisibility(word.id)}
                           >
-                            {word.showTranslation ? 'Слово' : 'Перевод'}
+                            {word.showTranslation ? t.word : t.translation}
                           </button>
                           <button
                             className="btn btn-success word-button"
                             onClick={() => setSelectedWord(word)}
                           >
-                            Детали
+                            {t.details}
                           </button>
 
                           <button
@@ -371,7 +454,7 @@ const RepeatWords = () => {
                               )
                             }
                           >
-                            Коммент
+                            {t.comment}
                           </button>
                           <button
                             className="btn btn-warning word-button"
@@ -385,7 +468,7 @@ const RepeatWords = () => {
                               )
                             }
                           >
-                            Примеры
+                            {t.examples}
                           </button>
 
                         </div>
@@ -397,7 +480,7 @@ const RepeatWords = () => {
                       </div>
                     ))
                   ) : (
-                    <div className="list-group-item">Нет слов для отображения</div>
+                    <div className="list-group-item">{t.noWords}</div>
                   )}
                 </Slider>
               )}
@@ -409,10 +492,10 @@ const RepeatWords = () => {
             <button className="btn btn-primary" onClick={handleNextLevel} disabled={loadingLevelUp}>
               {loadingLevelUp ? (
                 <span className="loading-dots">
-                  Loading<span>.</span><span>.</span><span>.</span>
+                  {t.loading}<span>.</span><span>.</span><span>.</span>
                 </span>
               ) : (
-                "Level up!"
+                t.levelUp
               )}
             </button>
             <input
