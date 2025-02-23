@@ -9,8 +9,8 @@ This is a personal Finnish-Russian dictionary built with React. It helps me repe
 
 1. Clone the repository:  
    ```sh
-   git clone https://github.com/yourusername/dictionary-search.git
-   cd dictionary-search
+   git clone https://github.com/yourusername/dictionary-frontend.git
+   cd dictionary-frontend
    ```
 
 2. Install dependencies:  
