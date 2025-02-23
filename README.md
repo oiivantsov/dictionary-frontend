@@ -9,7 +9,7 @@ This is a personal Finnish-Russian dictionary built with React. It helps me repe
 
 1. Clone the repository:  
    ```sh
-   git clone https://github.com/yourusername/dictionary-frontend.git
+   git clone https://github.com/oiivantsov/dictionary-frontend.git
    cd dictionary-frontend
    ```
 
