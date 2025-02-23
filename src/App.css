@@ -2,7 +2,12 @@
 body, html {
   margin: 0;
   padding: 0;
-  font-family: Arial, sans-serif;
+  font-family: Open Sans, sans-serif;
+}
+
+h2 {
+  text-align: center;
+  margin-bottom: 20px;
 }
 
 /* Light theme */
@@ -31,13 +36,20 @@ body, html {
   font-size: 1.5rem;
   cursor: pointer;
   padding: 10px;
-  border-radius: 50%;
-  background-color: rgba(255, 255, 255, 0.2);
+  /* border-radius: 50%; */
+  /* background-color: rgba(255, 255, 255, 0.2); */
   transition: background-color 0.3s;
 }
 
-.theme-toggle:hover {
-  background-color: rgba(255, 255, 255, 0.5);
+/* Theme toggle button */
+.language-toggle {
+  position: absolute;
+  top: 30px;
+  right: 80px;
+  background-color: #3e4449;
+  color: white;
+  cursor: pointer;
+  padding: 5px;
 }
 
 /* Add margin to the selector */
@@ -96,7 +108,7 @@ select {
   position: absolute;
   left: 0;
   top: 100%;
-  background-color: #f9f9f9;
+  background-color: #2c2c2c;
   min-width: 160px;
   box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
   z-index: 1;
@@ -105,7 +117,7 @@ select {
 
 /* Links inside the dropdown */
 .dropdown-content a {
-  color: black;
+  color: white;
   padding: 12px 16px;
   text-decoration: none;
   display: block;
@@ -113,7 +125,8 @@ select {
 }
 
 .dropdown-content a:hover {
-  background-color: #ddd;
+  color: #2c2c2c;
+  background-color: #f7acac;
 }
 
 /* Show the dropdown content when hovering */
@@ -159,15 +172,620 @@ select {
   padding: 20px;
 }
 
-select.level-selector {
-  width: 100%; /* Установим ширину по умолчанию */
-  max-width: 300px; /* Или любое другое значение для ширины */
-  margin: 0 0 0 0; /* Для центровки */
-  display: block; /* Убедимся, что элемент занимает всю ширину блока */
+.status-text {
+  width: 100%;
+  margin: auto;
+  text-align: center;
 }
+
+.level-selector-container {
+  display: flex;
+  align-items: center;
+  justify-content: center; /* Center-align the elements */
+  margin-bottom: 20px; /* Add some space below the container */
+
+}
+
+select.level-selector {
+  margin: 0;
+  margin-right: 5px;
+  width: 100%;
+  height: 40px;
+  max-width: 250px; /* Limit the width of the dropdown */
+  padding: 8px 12px; /* Add padding for better clickability */
+  font-size: 1rem; /* Adjust the font size */
+  border: 1px solid #ccc; /* Subtle border */
+  border-radius: 4px; /* Rounded corners */
+  outline: none; /* Remove default focus outline */
+  transition: border-color 0.3s ease; /* Smooth focus effect */
+}
+
+.show-days-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  font-size: 1rem; /* Larger font for the arrow */
+  font-weight: bold;
+  background-color: #3e4449; /* Blue background */
+  color: white; /* White text */
+  border: 1px solid #ccc;
+  border-radius: 4px; /* Circular button */
+  cursor: pointer;
+  /* padding-bottom: 10px; */
+  margin-right: 5px;
+}
+
+
+button.next-level-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100px;
+  height: 40px;
+  font-size: 1.5rem; /* Larger font for the arrow */
+  font-weight: bold;
+  background-color: #3e4449; /* Blue background */
+  color: white; /* White text */
+  border: 1px solid #ccc;
+  border-radius: 4px; /* Circular button */
+  cursor: pointer;
+  /* padding-bottom: 10px; */
+}
+
 
 .mb-section {
   margin-bottom: 20px;
 }
 
+/* Dark theme table styles */
+.table-dark-theme {
+  background-color: #343a40;
+  color: #f8f9fa;
+  border-collapse: collapse;
+  width: 100%;
+}
 
+.table-dark-theme th,
+.table-dark-theme td {
+  border: 1px solid #495057;
+  text-align: center;
+  padding: 8px;
+}
+
+.table-dark-theme th {
+  background-color: #495057;
+  color: #f8f9fa;
+  font-weight: bold;
+}
+
+.table-dark-theme td {
+  background-color: #3e4449;
+  color: #f8f9fa;
+}
+
+.table-dark-theme tr:nth-child(even) td {
+  background-color: #2c3035;
+}
+
+.table-dark-theme tr:hover td {
+  background-color: #495057;
+  color: #ffffff;
+}
+
+.table-dark-theme th span {
+  color: #adb5bd;
+  font-weight: normal;
+}
+
+/* Dark theme container styles */
+.container {
+  background-color: #2c2c2c;
+  color: #f0f0f0;
+  padding: 20px;
+  border-radius: 8px;
+}
+
+/* Dark theme for form controls */
+.form-control {
+  background-color: #3e4449;
+  color: #f0f0f0;
+  border: 1px solid #495057;
+}
+
+.form-control:focus {
+  background-color: #495057;
+  color: #ffffff;
+  border-color: #adb5bd;
+}
+
+input::placeholder {
+  color: #a5a4a4 !important;
+  /* font-style: italic; */
+}
+
+/* List group items in dark theme */
+.list-group-item {
+  background-color: #3e4449;
+  color: #f0f0f0;
+  border: 1px solid #495057;
+}
+
+/* Dark theme card */
+.card {
+  background-color: #3e4449;
+  color: #f0f0f0;
+  border: 1px solid #495057;
+  border-radius: 8px;
+}
+
+.card .btn {
+  margin-right: 10px;
+}
+
+.filter-page-card {
+  min-height: 150px;
+  padding: 10px;
+  border-radius: 8px;
+}
+
+.filter-page-card-body {
+  font-size: 0.9rem;
+}
+
+.filter-page-header {
+  font-size: 1rem;
+  display: flex;
+  align-items: center;
+}
+
+.filter-page-checkbox {
+  width: 20px;
+  height: 20px;
+}
+
+.filter-page-text {
+  font-size: 0.9rem;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.filter-page-button-container .btn {
+  padding: 5px 10px;
+}
+
+
+/* Status text styling */
+.status-text {
+  color: #adb5bd;
+  font-weight: bold;
+}
+
+/* Dropdown for level selector */
+.level-selector {
+  background-color: #3e4449;
+  color: #f0f0f0;
+  border: 1px solid #495057;
+}
+
+.level-selector option {
+  background-color: #3e4449;
+  color: #f0f0f0;
+}
+
+.loading-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100vh; /* Full viewport height */
+  font-size: 18px;
+  color: #555; /* Subtle gray color */
+}
+
+.loading-container .spinner {
+  margin-right: 10px; /* Space between spinner and text */
+}
+
+.loading-container-small {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100px;
+  background-color: #3e4449; /* Light background for contrast */
+  border: 1px solid; /* Subtle border */
+  border-radius: 4px; /* Rounded corners */
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); /* Light shadow for depth */
+  font-size: 18px;
+  color: #555; /* Subtle gray color */
+  margin-bottom: 20px;
+}
+
+.loading-container-average {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 455px;
+  background-color: #3e4449; /* Light background for contrast */
+  border: 1px solid; /* Subtle border */
+  border-radius: 4px; /* Rounded corners */
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); /* Light shadow for depth */
+  font-size: 18px;
+  color: #555; /* Subtle gray color */
+  margin-bottom: 20px;
+}
+
+.button-container {
+  display: flex;
+  flex-direction: column; /* Stack buttons vertically on small screens */
+  align-items: center;
+  gap: 10px; /* Space between buttons */
+  padding: 0 10px; /* Add padding for smaller screens */
+  margin: 20px 0 0px; /* Center the container */
+}
+
+.fields-container {
+  margin-top: 20px;
+  display: flex;
+  flex-direction: column; /* Stack fields vertically on small screens */
+  gap: 15px; /* Space between fields */
+}
+
+.action-button {
+  width: 100%; /* Full width for better tap targets on phones */
+  max-width: 300px; /* Prevent buttons from becoming too wide */
+  font-size: 16px; /* Larger text for readability */
+  padding: 10px 15px; /* Increase padding for touch comfort */
+  border-radius: 5px; /* Rounded corners for a modern look */
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Subtle shadow for better visibility */
+}
+
+textarea {
+  height: 150px; /* Default height for all textareas */
+}
+
+textarea.examples,
+textarea.comment {
+  height: 200px; /* Larger height for examples and comments */
+}
+
+@media (min-width: 768px) {
+  .button-container {
+    flex-direction: row; /* Arrange buttons horizontally on larger screens */
+    justify-content: center; /* Center horizontally */
+    gap: 20px; /* Increase space between buttons for desktop */
+  }
+
+  .action-button {
+    width: auto; /* Buttons take up only as much space as needed */
+  }
+}
+
+.statistics-container {
+  display: flex; /* Arrange items side by side */
+  height: 100px;
+  gap: 14px; /* Space between items */
+  padding: 10px; /* Add padding around the container */
+  background-color: #3e4449; /* Light background for contrast */
+  border: 1px solid; /* Subtle border */
+  border-radius: 4px; /* Rounded corners */
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); /* Light shadow for depth */
+  margin-bottom: 20px;
+}
+
+.statistics-item {
+  flex: 1; /* Equal width for each item */
+  text-align: center; /* Center-align text */
+  padding: 10px; /* Add padding inside each item */
+}
+
+.statistics-item h5 {
+  margin: 0;
+  font-size: 16px; /* Slightly larger heading */
+  color: #f8f9fa; /* Muted heading color */
+}
+
+.statistics-item p {
+  margin: 5px 0 0; /* Reduce spacing below the paragraph */
+  font-size: 20px; /* Emphasize the number */
+  font-weight: bold;
+  color: #f8f9fa; /* Darker text color for numbers */
+}
+
+.carousel-card {
+  height: 455px; /* Fixed height for cards */
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  overflow: hidden;
+  /* padding: 20px; */
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Optional shadow */
+}
+
+.text-block {
+  height: 300px;
+  flex: 1; /* Allows it to take up available vertical space */
+  overflow-y: auto; /* Enable scrolling for long content */
+  margin-bottom: 0.75rem;
+  /* no top padding */
+  padding: 0 20px 10px 20px;
+  background-color: #3e4449; /* Light background color */
+}
+
+.text-block.centered-text {
+  justify-content: center; /* Center horizontally */
+  align-items: center; /* Center vertically */
+  display: flex; /* Ensure Flexbox is applied */
+  overflow: hidden; /* Disable scrolling for centered text */
+}
+
+.text {
+  font-size: 1.2rem;
+  text-align: left;
+}
+
+.text.large-text {
+  font-size: 2rem; /* Adjust to desired size */
+  font-weight: bold; /* Optional: Make the text bold */
+  text-align: center; /* Center-align the text */
+}
+
+.content-label {
+  text-align: right;
+  font-size: 2rem;
+  line-height: 0.75rem;
+  /* font-weight: bold; */
+  /* margin-bottom: 10px; */
+  color: white;
+  background-color: #3e4449;
+  padding-right: 10px;
+  padding-top: 5px;
+  display: block;
+  margin: 0;
+}
+
+
+/* buttons horizontally and center */
+.button-block {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 10px; /* Space between buttons */
+  margin-bottom: 5px;
+}
+
+.word-button {
+  min-width: 120px; /* Fixed button width */
+  max-width: 120px; /* Fixed button width */
+}
+
+.word-number {
+  text-align: center; /* Center-align the word number */
+  font-weight: bold;
+  font-size: 1rem; /* Adjust font size as needed */
+}
+
+.level-up-block {
+  display: flex;
+  justify-content: left;
+  gap: 10px; /* Space between buttons */
+  margin-top: 3rem;
+}
+
+
+
+/* search chat button */
+.floating-search-button {
+  position: fixed;
+  bottom: 20px;
+  right: 10px;
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  background-color: #495057;
+  color: white;
+  border: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 24px;
+  cursor: pointer;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+  transition: transform 0.2s ease-in-out, background-color 0.3s ease;
+}
+
+.floating-search-button:hover {
+  background-color: #383c3f;
+  transform: scale(1.1);
+}
+
+.search-dialog {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.dialog-content {
+  background-color: white;
+  padding: 20px;
+  border-radius: 10px;
+  width: 80%;
+  max-width: 500px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+  position: relative;
+}
+
+.close-button {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background: none;
+  border: none;
+  font-size: 24px;
+  color: #333;
+  cursor: pointer;
+  transition: color 0.2s ease;
+}
+
+.close-button:hover {
+  color: #007bff;
+}
+
+
+/* dialog styling */
+.search-dialog {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.6); /* Semi-transparent background */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.dialog-content {
+  background: #2c2c2c;
+  border-radius: 10px;
+  padding: 50px 20px;
+  width: 90%;
+  max-width: 500px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+  text-align: center;
+}
+
+.close-button {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background: none;
+  border: none;
+  font-size: 24px;
+  cursor: pointer;
+  color: white;
+  transition: color 0.3s ease;
+}
+
+.close-button:hover {
+  color: #ff0000;
+}
+
+.dialog-title {
+  font-size: 1.5rem;
+  margin-bottom: 20px;
+  color: #333;
+}
+
+.results-list {
+  list-style: none;
+  padding: 0;
+  margin: 20px 0 0;
+  max-height: 200px;
+  overflow-y: auto;
+}
+
+.word {
+  font-weight: bold;
+}
+
+.result-item {
+  padding: 10px 0;
+  border-bottom: 1px solid #ddd;
+}
+
+.result-item:last-child {
+  border-bottom: none;
+}
+
+
+.loading-indicator {
+  margin-top: 20px;
+  font-size: 1rem;
+  color: #007bff;
+}
+
+
+
+.dialog-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.dialog-content {
+  position: relative;
+  background: #383c3f;
+  padding: 20px 20px 20px;
+  border-radius: 5px;
+  width: 300px;
+  text-align: center;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.close-button {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background: transparent;
+  border: none;
+  font-size: 20px;
+  font-weight: bold;
+  color: #fff;
+  cursor: pointer;
+  transition: color 0.3s ease;
+}
+
+.close-button:hover {
+  color: #f00;
+}
+
+
+
+
+.loading-dots {
+  display: inline-flex;
+  align-items: center;
+}
+
+.loading-dots span {
+  animation: blink 1.5s infinite;
+}
+
+.loading-dots span:nth-child(2) {
+  animation-delay: 0.2s;
+}
+
+.loading-dots span:nth-child(3) {
+  animation-delay: 0.4s;
+}
+
+@keyframes blink {
+  0% {
+    opacity: 0;
+  }
+  50% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+  }
+}
