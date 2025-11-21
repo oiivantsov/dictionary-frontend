@@ -49,7 +49,7 @@ const StatisticsPage = () => {
   useEffect(() => {
     const fetchStatistics = async () => {
       try {
-        const response = await axios.get('/api/words/stats');
+        const response = await axios.get('/fi/api/words/stats');
         setStatistics(response.data);
       } catch (error) {
         console.error(t.error, error);

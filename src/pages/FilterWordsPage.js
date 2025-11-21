@@ -74,7 +74,7 @@ const FilterWordsPage = () => {
         Object.entries(filters).map(([key, value]) => [key, value === '' ? null : value])
       );
 
-      const response = await axios.get('/api/words/filter', {
+      const response = await axios.get('/fi/api/words/filter', {
         params: filtersWithNulls
       });
       setWords(response.data);

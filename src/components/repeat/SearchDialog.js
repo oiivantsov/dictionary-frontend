@@ -53,7 +53,7 @@ const SearchDialog = ({ onClose }) => {
         }
         try {
             setLoading(true);
-            const response = await axios.get(`/api/words/search`, {
+            const response = await axios.get(`/fi/api/words/search`, {
                 params: {
                     [searchBy]: searchTerm,
                 },

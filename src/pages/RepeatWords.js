@@ -119,10 +119,10 @@ const RepeatWords = () => {
     const fetchWords = async () => {
       try {
         setLoading(true);
-        const response = await axios.get(`/api/words/repeat?level=${level}`);
+        const response = await axios.get(`/fi/api/words/repeat?level=${level}`);
 
         // Fetch level days
-        const response1 = await axios.get(`/api/words/level-days`);
+        const response1 = await axios.get(`/fi/api/words/level-days`);
         const levelDaysMap = Array(12).fill("-"); // Default to "-"
         response1.data.forEach(([level, days]) => {
           levelDaysMap[level - 1] = days; // Map level to index (level - 1)
@@ -154,7 +154,7 @@ const RepeatWords = () => {
   const fetchWordsDaysFilter = async (days) => {
     try {
       setLoading(true);
-      const response = await axios.get(`/api/words/repeat?level=${level}&days_since_last_repeat=${days}`);
+      const response = await axios.get(`/fi/api/words/repeat?level=${level}&days_since_last_repeat=${days}`);
       setLoading(false);
 
       if (response.data.length > 0) {
@@ -199,7 +199,7 @@ const RepeatWords = () => {
         daysSinceLastRepeat,
         date_repeated: customDate
       };
-      await axios.post(`/api/words/upgrade`, updatedWords);
+      await axios.post(`/fi/api/words/upgrade`, updatedWords);
       setLoadingLevelUp(false);
       alert(t.levelUpSuccess);
 

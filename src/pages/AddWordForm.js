@@ -145,7 +145,7 @@ const AddWordForm = () => {
 
   const checkIfWordExists = async () => {
     try {
-      const response = await axios.get(`/api/words/is`, {
+      const response = await axios.get(`/fi/api/words/is`, {
         params: {
           word: word
         }

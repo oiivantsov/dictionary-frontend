@@ -112,7 +112,7 @@ const SearchWords = () => {
     const fetchInitialData = async () => {
       try {
         setLoading(true); // Start loading
-        const response = await axios.get(`/api/words/search`, {
+        const response = await axios.get(`/fi/api/words/search`, {
           params: {
             [searchBy]: "mennä", // Example default search term
           },
@@ -160,7 +160,7 @@ const SearchWords = () => {
   const handleDelete = async () => {
     if (window.confirm(t.deleteConfirm)) {
       try {
-        await axios.delete(`/api/words/${selectedWord.id}`);
+        await axios.delete(`/fi/api/words/${selectedWord.id}`);
         alert(t.deleteButton);
         setSelectedWord(null);
         handleSearch();
