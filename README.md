@@ -27,3 +27,5 @@ This is a personal Finnish-Russian dictionary built with React. It helps me repe
    ```
    http://localhost:3000
    ```
+
+> **Note:** The backend should be running according to the setup instructions in the backend repository (e.g., using Docker).  
