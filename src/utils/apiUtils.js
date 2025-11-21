@@ -2,7 +2,7 @@ import axios from 'axios';
 
 export const fetchWordData = async (word, source, setWordData, setSuccessMessage) => {
   try {
-    const response = await axios.get(`/api/fetch-word-${source}`, {
+    const response = await axios.get(`/fi/api/fetch-word-${source}`, {
       params: { word }
     });
     const autoFilledData = response.data;
